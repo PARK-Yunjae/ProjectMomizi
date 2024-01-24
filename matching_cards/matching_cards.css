@@ -1,0 +1,68 @@
+main{
+    position: absolute;
+    top: 60px;
+    width: 400px;
+    height: 600px;
+    left: 50%;
+    transform: translate(-50%);
+    display: flex;
+    flex-wrap: wrap;
+}
+menu{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 2em;
+}
+.stage{
+    font-weight: bold;
+}
+board{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card {
+    position: relative;
+    width: 50%;
+    height: 50%;
+}
+
+.card_back,
+.card_front {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #000;
+    border-radius: 5px;
+    background-clip: content-box;
+    background-color: #FFF;
+    background-repeat: no-repeat;
+    background-position: center center;
+    backface-visibility: hidden;
+    transition: transform 500ms;
+}
+
+.card_front {
+    transform: rotateY(-180deg);
+    background-size: 80% auto;
+}
+
+.card_back {
+    transform: rotateY(0deg);
+    background-image: url('../img/chzzk.png');
+    background-size: 80% auto;
+}
+
+@media screen and (max-width: 768px) {
+    main{
+        display: flex;
+        width: 100%;
+        height: 80%;
+        margin: 10px 0;
+    }
+
+    
+}
