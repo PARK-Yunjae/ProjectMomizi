@@ -1,7 +1,7 @@
 export default class Snow {
     constructor(num, canvas) {
         this.img = new Image();
-        this.img.src = `../img/${num}.png`;
+        this.img.src = `./img/${num}.png`;
         this.img.addEventListener("load", () => {
             this.ready = true;
         });
