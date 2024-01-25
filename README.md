@@ -29,7 +29,7 @@
       2. 게임1 - 카드짝 맞추기 - 기존 예제 참고
         header - 메인페이지 header고정
         main   - 게임 페이지
-        ![카드짝맞추기_순서도](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/913f9f5e-f033-460d-9994-6d0ef707eb6d)
+        ![카드짝맞추기_순서도](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/913f9f5e-f033-460d-9994-6d0ef707eb6d.png)
 
 
         이미지 8종류 - 배경 투명
