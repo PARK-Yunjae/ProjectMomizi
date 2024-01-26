@@ -58,11 +58,12 @@ const engine = Engine.create();
 
 // 랜더 생성
 const render = Render.create({
+    name: "canvas2",
     element: main,
     engine: engine,
     options: {
         wireframes: false,
-        background: "lightgray",
+        background: 'transparent',
         width: main.clientWidth,
         height: main.clientHeight,
     }
@@ -71,29 +72,29 @@ const render = Render.create({
 const world = engine.world;
 
 // 왼쪽벽 - 이름 줘서 반응형으로 크기 줄여보려고 했는데 실패
-const leftWall = Bodies.rectangle(-49, main.clientHeight / 2, 100, main.clientHeight, {
+const leftWall = Bodies.rectangle(-40, main.clientHeight / 2, 100, main.clientHeight, {
     name: "leftWall",
     isStatic: true,
     render: {
-        fillStyle: "black"
+        fillStyle: "orange"
     }
 });
 
 // 오른쪽 벽
-const rightWall = Bodies.rectangle(main.clientWidth + 49, main.clientHeight / 2, 100, main.clientHeight, {
+const rightWall = Bodies.rectangle(main.clientWidth + 40, main.clientHeight / 2, 100, main.clientHeight, {
     name: "rightWall",
     isStatic: true,
     render: {
-        fillStyle: "black"
+        fillStyle: "orange"
     }
 });
 
 // 바닥
-const ground = Bodies.rectangle(main.clientWidth / 2, main.clientHeight + 49, main.clientWidth, 100, {
+const ground = Bodies.rectangle(main.clientWidth / 2, main.clientHeight + 40, main.clientWidth, 100, {
     name: "ground",
     isStatic: true,
     render: {
-        fillStyle: "black"
+        fillStyle: "orange"
     }
 });
 
@@ -165,7 +166,7 @@ main.addEventListener("mousemove", (e) => {
     let x = (body.offsetWidth / 2) - (main.clientWidth / 2);
 
     if (isClick) {
-        if (e.clientX - x - currentCircle.radius - 1 > 0 && e.clientX - x + currentCircle.radius < main.clientWidth - 1)
+        if (e.clientX - x - currentCircle.radius - 11 > 0 && e.clientX - x + currentCircle.radius < main.clientWidth - 11)
             currentBody.position.x = e.clientX - x;
     }
 
@@ -178,11 +179,11 @@ main.addEventListener("mouseup", (e) => {
     let x = e.clientX - ((body.offsetWidth / 2) - (main.clientWidth / 2));
 
     if (x < CIRCLES[index].radius) {
-        x = CIRCLES[index].radius;
+        x = CIRCLES[index].radius + 10;
     }
 
     if (x > main.clientWidth - CIRCLES[index].radius) {
-        x = main.clientWidth - CIRCLES[index].radius;
+        x = main.clientWidth - CIRCLES[index].radius - 10;
     }
 
     if (isClick) {
