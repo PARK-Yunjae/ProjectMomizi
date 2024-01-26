@@ -48,6 +48,8 @@ button:hover{
 
 @media screen and (max-width: 768px) {
     button{
+        width: 200px;
+        height: 200px;
         font-size: 16px;
     }
 }

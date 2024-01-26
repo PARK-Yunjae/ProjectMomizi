@@ -258,7 +258,7 @@ class cards {
                 this.timer.innerHTML = "";
                 clearInterval(this.timerInterval);
                 this.start.style.top = "50%";
-                this.start.innerHTML = `Stage ${this.level} 클리어<br>${180-this.time}초 <br><br>클릭`;
+                this.start.innerHTML = `Stage ${this.level} 클리어<br>${100-this.time}초 <br><br>클릭`;
 
                 if (this.level === 1) {
                     this.BOARD_SIZE = 12;
