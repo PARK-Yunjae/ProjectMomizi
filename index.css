@@ -84,13 +84,13 @@ main a{
     flex-direction: column;
     background-color: white;
     box-shadow: 5px 5px 5px 5px gray;
-    transition-delay: 2s;
-    transform: scale (1.0);
+    transform: scale(1.0);
 }
 
-main a:hover{
-    transition-delay: 2s;
-    transform: scale (1.5);
+a:hover{
+    transition: 1s;
+    transform: scale(1.05);
+    background-color: paleturquoise;
 }
 
 main strong{

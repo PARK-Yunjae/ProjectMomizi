@@ -55,6 +55,7 @@ class cards {
 
     initScreen() {
         this.board.innerHTML = "";
+        this.stage.innerHTML = `Stage ${this.level}`;
     }
 
     clearBoard() {
@@ -253,6 +254,7 @@ class cards {
         setTimeout(() => {
             // 클리어
             if (this.time > 0) {
+                this.board.innerHTML = "";
                 this.timer.innerHTML = "";
                 clearInterval(this.timerInterval);
                 this.start.style.top = "50%";
@@ -271,15 +273,16 @@ class cards {
                     this.start.style.onclick = `location.href = "../index.html";`;
                 }
                 this.level++;
-                this.stage.innerHTML = `Stage ${this.level}`;
             }
             // 게임오버
             else {
+                this.board.innerHTML = "";
                 this.timer.innerHTML = "";
                 clearInterval(this.timerInterval);
                 this.start.style.top = "50%";
                 this.start.innerHTML = `게임오버<br>클릭시 재시작`;
             }
+            this.stage.innerHTML = ``;
         }, 1000);
     }
 }
