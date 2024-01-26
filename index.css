@@ -27,12 +27,9 @@ a{
 /* header */
 header{
     padding: 10px;
-    width: 100%;
-    position: absolute;
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: auto;
+    /* width: 100%; */
+    /* position: absolute; */
 }
 .inner{
     width: 100%;
@@ -50,9 +47,6 @@ header{
 }
 
 .menu{
-    display: flex;
-    justify-self: center;
-    align-self: center;
 }
 
 .menu a{
@@ -69,7 +63,6 @@ header{
 main{
     margin: auto;
     width: 90%;
-    top: 100px;
 }
 
 main a{
@@ -92,10 +85,21 @@ main strong{
 }
 
 main img{
-    flex: 1;
     width: 100%;
     height: 400px;
     padding: 20px;
+}
+
+@media screen and (max-height: 700px) {
+    main{
+        height: 78%;
+    }
+    main img{
+        flex: 1;
+        width: 100%;
+        height: 360px;
+        padding: 20px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -127,11 +131,13 @@ main img{
         padding-top: 80px;
         box-sizing: border-box;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.17);
+        border-radius: 10px 0 10px 10px;
         transition: 0.3s; 
     }
         
     .menu.active {
         right: 0;
+        z-index: 1000;
     }
         
     .menu a {
@@ -146,10 +152,11 @@ main img{
     .trigger {
         display: block;
         width: 30px;
-        height: 16px;
+        height: 15px;
         position: absolute;
-        right: 20px;
-        top: 35px;
+        right: 25px;
+        top: 25px;
+        z-index: 1000;
     }
     
     .trigger span {
@@ -162,19 +169,19 @@ main img{
     }
 
     .trigger span:nth-child(1) {
-        top: 0;
+        top: 0%;
     }
 
     .trigger span:nth-child(2) {
-        top: 50%;
+        top: 45%;
     }
 
     .trigger span:nth-child(3) {
-        top: 100%;
+        top: 90%;
     }
     
     .trigger.active span:nth-child(1) {
-        top: 50%;
+        top: 40%;
         transform: rotate(45deg);
     }
     
@@ -183,7 +190,7 @@ main img{
     }
 
     .trigger.active span:nth-child(3) {
-        top: 50%;
+        top:60%;
         transform: rotate(-45deg);
     }
 }
