@@ -1,8 +1,8 @@
 main{
     position: absolute;
     top: 60px;
-    width: 50%;
-    height: 80%;
+    width: 450;
+    height: 765;
     left: 50%;
     transform: translate(-50%);
     display: flex;
@@ -56,16 +56,14 @@ board{
     background-size: 80% auto;
 }
 
-@media screen and (min-width: 769px) and (max-width: 1023px) {
+@media screen and (max-width: 768px) {
     main{
-        width: 70%;
-        height: 80%;
+        width: 96%;
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-height: 799px) {
     main{
-        width: 95%;
-        height: 80%;
+        height: 78%;
     }
 }

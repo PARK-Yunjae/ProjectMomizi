@@ -26,6 +26,6 @@ canvas{
 }
 @media screen and (max-height: 799px) {
     main{
-        height: 90%;
+        height: 85%;
     }
 }
