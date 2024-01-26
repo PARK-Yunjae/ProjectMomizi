@@ -4,18 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게임화면</title>
+    <title>수박게임</title>
     <link rel="stylesheet" href="../game_css/game.css">
     <link rel="stylesheet" href="../canvas/canvas.css">
+    <link rel="stylesheet" href="../watermelon/watermelon.css">
+    <script src="../watermelon/matter.js" type="text/javascript"></script>
+    <script type="module" src="../watermelon/watermelon.js" defer></script>
     <script type="module" src="../canvas/canvas.js" defer></script>
-
 </head>
 
 <body>
     <header>
         <a href="../index.html"><img src="../img/logo.png" alt="logo"></a>
     </header>
-    <canvas id="board"></canvas>
+    <main>
+        <strong id="score"></strong>
+    </main>
+    <button class="startBtn" onclick="location.href = '#';">게임시작</button>
+
 </body>
 
 </html>

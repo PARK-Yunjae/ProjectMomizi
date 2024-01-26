@@ -6,7 +6,7 @@ class cards {
         this.stage = document.querySelector(".stage");
         this.cardBack = document.getElementsByClassName("card_back");
         this.cardFront = document.getElementsByClassName("card_front");
-        this.time = 180;
+        this.time = 100;
         this.level = 1;
         this.ready = false;
         this.isFlip = false;
@@ -49,7 +49,7 @@ class cards {
 
     initGame() {
         this.isFlip = false;
-        this.time = 180;
+        this.time = 100;
         this.cardDeck = [];
     }
 
@@ -118,14 +118,14 @@ class cards {
             if (this.level == 1) { // 4개 
                 card[i].style.width = "50%";
                 card[i].style.height = "50%";
-            } else if (this.level == 2) { // 8개
-                card[i].style.width = "33%";
+            } else if (this.level == 2) { // 12개
+                card[i].style.width = "25%";
                 card[i].style.height = "33%";
             } else if (this.level == 3) { // 16개
                 card[i].style.width = "25%";
                 card[i].style.height = "25%";
             } else if (this.level == 4) { // 24개
-                card[i].style.width = "16%";
+                card[i].style.width = "16.6%";
                 card[i].style.height = "25%";
             }
         }
@@ -251,25 +251,35 @@ class cards {
     // 게임이 종료되면
     showGameResult() {
         setTimeout(() => {
-            this.timer.innerHTML = "";
-            clearInterval(this.timerInterval);
-            this.start.style.top = "50%";
-            this.start.innerHTML = `Stage ${this.level} 클리어<br>${180-this.time}초 <br> 클릭시 다음 스테이지`;
+            // 클리어
+            if (this.time > 0) {
+                this.timer.innerHTML = "";
+                clearInterval(this.timerInterval);
+                this.start.style.top = "50%";
+                this.start.innerHTML = `Stage ${this.level} 클리어<br>${180-this.time}초 <br> 클릭시 다음 스테이지`;
 
-            if (this.level === 1) {
-                this.BOARD_SIZE = 8;
-            } else if (this.level === 2) {
-                this.BOARD_SIZE = 16;
-            } else if (this.level === 3) {
-                this.BOARD_SIZE = 24;
-            } else {
-                this.start.innerHTML = `축하합니다`;
-                this.level = 0;
-                this.BOARD_SIZE = 4;
-                this.start.style.onclick = "location.href = '../index.html';";
+                if (this.level === 1) {
+                    this.BOARD_SIZE = 12;
+                } else if (this.level === 2) {
+                    this.BOARD_SIZE = 16;
+                } else if (this.level === 3) {
+                    this.BOARD_SIZE = 24;
+                } else {
+                    this.start.innerHTML = `축하합니다`;
+                    this.level = 0;
+                    this.BOARD_SIZE = 4;
+                    this.start.style.onclick = `location.href = "../index.html";`;
+                }
+                this.level++;
+                this.stage.innerHTML = `Stage ${this.level}`;
             }
-            this.level++;
-            this.stage.innerHTML = `Stage ${this.level}`;
+            // 게임오버
+            else {
+                this.timer.innerHTML = "";
+                clearInterval(this.timerInterval);
+                this.start.style.top = "50%";
+                this.start.innerHTML = `게임오버<br>클릭시 재시작`;
+            }
         }, 1000);
     }
 }
