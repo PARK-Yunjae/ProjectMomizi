@@ -57,25 +57,18 @@ header{
 .menu a{
     margin-right: 20px;
 }
+.menu img{
+    height: 60px;
+}
 
 .trigger {
     display: none;
 }
 
-
-/* footer */
-footer{
-    position: absolute;
+main{
     width: 100%;
-    top: 90%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    flex: 1;
-}
-
-footer img{
-    height: 60px;
+    position: absolute;
+    
 }
 
 @media (max-width: 768px) {

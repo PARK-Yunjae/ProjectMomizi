@@ -11,41 +11,46 @@ let win = 0;
 
 const start = document.querySelector(".startBtn");
 const score = document.querySelector("#score");
+const pop = new Audio("../watermelon/pop.wav");
+
 let scoreNum = 0;
 let main = document.querySelector("main");
 
 
 // 레벨별 과일
 const CIRCLES = [{
-    name: 1,
+    name: 0,
     radius: main.clientWidth / 100 * 3
 }, {
-    name: 2,
+    name: 1,
     radius: main.clientWidth / 100 * 5
 }, {
-    name: 3,
+    name: 2,
     radius: main.clientWidth / 100 * 7
 }, {
-    name: 4,
+    name: 3,
     radius: main.clientWidth / 100 * 9
 }, {
-    name: 5,
+    name: 4,
     radius: main.clientWidth / 100 * 11
 }, {
-    name: 6,
+    name: 5,
     radius: main.clientWidth / 100 * 13
 }, {
-    name: 7,
+    name: 6,
     radius: main.clientWidth / 100 * 15
 }, {
-    name: 8,
+    name: 7,
     radius: main.clientWidth / 100 * 17
 }, {
-    name: 9,
+    name: 8,
     radius: main.clientWidth / 100 * 19
 }, {
-    name: 10,
+    name: 9,
     radius: main.clientWidth / 100 * 21
+}, {
+    name: 10,
+    radius: main.clientWidth / 100 * 23
 }, ];
 
 // 엔진 생성
@@ -141,7 +146,7 @@ function addBody(index, value, x) {
 
 // 마우스 따라다니는 박스 생성
 function addCicle() {
-    let index = parseInt(Math.random() * 5);
+    let index = parseInt(Math.random() * 4);
 
     addBody(index, true, main.clientWidth / 2);
 
@@ -211,22 +216,25 @@ Matter.Events.on(engine, "collisionStart", (e) => {
             scoreNum += (index + 1) * 10;
             score.innerHTML = scoreNum;
 
-            const newBody = Bodies.circle(
-                collision.collision.supports[0].x,
-                collision.collision.supports[0].y,
-                newCircle.radius, {
-                    index: index + 1,
-                    render: {
-                        sprite: {
-                            texture: `../img/watermelon_Img/${newCircle.name}.png`,
-                            xScale: newCircle.radius * 2 / 512,
-                            yScale: newCircle.radius * 2 / 512
-                        }
-                    },
-                }
-            );
+            setTimeout(() => {
+                pop.play();
+                const newBody = Bodies.circle(
+                    collision.collision.supports[0].x,
+                    collision.collision.supports[0].y,
+                    newCircle.radius, {
+                        index: index + 1,
+                        render: {
+                            sprite: {
+                                texture: `../img/watermelon_Img/${newCircle.name}.png`,
+                                xScale: newCircle.radius * 2 / 512,
+                                yScale: newCircle.radius * 2 / 512
+                            }
+                        },
+                    }
+                );
 
-            Matter.World.add(world, newBody);
+                Matter.World.add(world, newBody);
+            }, 100);
         }
 
         // 패배
