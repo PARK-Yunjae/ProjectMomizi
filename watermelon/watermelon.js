@@ -24,34 +24,34 @@ const CIRCLES = [{
     radius: main.clientWidth / 100 * 3
 }, {
     name: 1,
-    radius: main.clientWidth / 100 * 5
+    radius: main.clientWidth / 100 * 4.5
 }, {
     name: 2,
-    radius: main.clientWidth / 100 * 7
+    radius: main.clientWidth / 100 * 6
 }, {
     name: 3,
-    radius: main.clientWidth / 100 * 9
+    radius: main.clientWidth / 100 * 7.5
 }, {
     name: 4,
-    radius: main.clientWidth / 100 * 11
+    radius: main.clientWidth / 100 * 9
 }, {
     name: 5,
-    radius: main.clientWidth / 100 * 13
+    radius: main.clientWidth / 100 * 10.5
 }, {
     name: 6,
-    radius: main.clientWidth / 100 * 15
+    radius: main.clientWidth / 100 * 12
 }, {
     name: 7,
-    radius: main.clientWidth / 100 * 17
+    radius: main.clientWidth / 100 * 13.5
 }, {
     name: 8,
-    radius: main.clientWidth / 100 * 19
+    radius: main.clientWidth / 100 * 15
 }, {
     name: 9,
-    radius: main.clientWidth / 100 * 21
+    radius: main.clientWidth / 100 * 16.5
 }, {
     name: 10,
-    radius: main.clientWidth / 100 * 23
+    radius: main.clientWidth / 100 * 18
 }, ];
 
 // 엔진 생성
@@ -100,7 +100,7 @@ const ground = Bodies.rectangle(main.clientWidth / 2, main.clientHeight + 40, ma
 });
 
 // 게임오버 라인
-const overLine = Bodies.rectangle(main.clientWidth / 2, 100, main.clientWidth, 1, {
+const overLine = Bodies.rectangle(main.clientWidth / 2, 50, main.clientWidth, 1, {
     name: "overLine",
     isStatic: true,
     isSensor: true,
@@ -136,7 +136,7 @@ let currentCircle = null;
 // 재활용 하려고 만든 박스 생성
 function addBody(index, value, x) {
     let circle = CIRCLES[index];
-    const body = Bodies.circle(x, 50, circle.radius, {
+    const body = Bodies.circle(x, 20, circle.radius, {
         index: index,
         isSleeping: value,
         render: {
@@ -185,7 +185,7 @@ main.addEventListener("mousemove", (e) => {
 
 });
 
-// 박스 추락 이벤트도 터치 마우스 구분
+// 박스 추락 이벤트도 터치 마우스 구분 (실패)
 function dropBox(e) {
     let index = currentBody.index;
     let body = document.querySelector("body");
@@ -236,25 +236,23 @@ Matter.Events.on(engine, "collisionStart", (e) => {
             scoreNum += (index + 1) * 10;
             score.innerHTML = scoreNum;
 
-            setTimeout(() => {
-                pop.play();
-                const newBody = Bodies.circle(
-                    collision.collision.supports[0].x,
-                    collision.collision.supports[0].y,
-                    newCircle.radius, {
-                        index: index + 1,
-                        render: {
-                            sprite: {
-                                texture: `../img/watermelon_Img/${newCircle.name}.png`,
-                                xScale: newCircle.radius * 2 / 512,
-                                yScale: newCircle.radius * 2 / 512
-                            }
-                        },
-                    }
-                );
+            pop.play();
+            const newBody = Bodies.circle(
+                collision.collision.supports[0].x,
+                collision.collision.supports[0].y,
+                newCircle.radius, {
+                    index: index + 1,
+                    render: {
+                        sprite: {
+                            texture: `../img/watermelon_Img/${newCircle.name}.png`,
+                            xScale: newCircle.radius * 2 / 512,
+                            yScale: newCircle.radius * 2 / 512
+                        }
+                    },
+                }
+            );
 
-                Matter.World.add(world, newBody);
-            }, 100);
+            Matter.World.add(world, newBody);
         }
 
         // 패배

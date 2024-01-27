@@ -1,7 +1,7 @@
 main{
     position: absolute;
     top: 60px;
-    width: 450px;
+    width: 400px;
     height: 800px;
     left: 50%;
     transform: translate(-50%);
@@ -29,7 +29,7 @@ canvas{
 	image-rendering: crisp-edges;
 }
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 410px) {
     main{
         width: 96%;
     }
