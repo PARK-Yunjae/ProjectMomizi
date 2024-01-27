@@ -190,17 +190,11 @@ function moveTarget(e) {
 
 // 마우스 따라다니기
 main.addEventListener("mousemove", (e) => {
-    if (isGameOver || isMobile) return;
+    if (isGameOver) return;
 
     moveTarget(e);
 
 });
-
-// 터치 이벤트 시도
-main.addEventListener("touchmove", e => {
-    if (isGameOver) return;
-    moveTarget(e);
-})
 
 // 박스 추락 이벤트도 터치 마우스 구분
 function dropBox(e) {
@@ -231,13 +225,6 @@ function dropBox(e) {
 
 // 떨어트리기 - 마우스
 main.addEventListener("mouseup", (e) => {
-    if (isGameOver || isMobile) return;
-
-    dropBox(e);
-})
-
-// 떨어트리기 - 터치
-main.addEventListener("touchend", (e) => {
     if (isGameOver) return;
 
     dropBox(e);
