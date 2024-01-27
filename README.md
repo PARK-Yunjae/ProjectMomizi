@@ -49,7 +49,6 @@
         반응 형 및 사이트, 게임 화면 링크 생성
 
     2. 게임1 카드 짝 맞추기
-        순서도
 
       카드 짝 맞추기 구현시 순서도를 안하고 개발을 시작해 여러가지 에로사항이 생겼습니다
       그때 그때 필요한걸 짜다보니 변수도 많이 추가되고 게임 재시작을 해야 할때 여러군데서 수정을 해야 했습니다.
@@ -57,6 +56,7 @@
 ![카드짝맞추기_순서도](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/5411f50c-e99e-4951-a9b0-84265384c9cb)
 
     3. 게임2 수박게임
+    
        이번에는 순서도를 먼저 만들고 개발에 엔진을 활용할 겁니다.
        matter.js 엔진은 어렵습니다.
        터치 이벤트 분리 시도 3차 실패 후 침
@@ -64,9 +64,17 @@
 ![수박게임](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/c29b3feb-aece-4217-ac0c-dda074316c37)
 
     4. 게임3 반응속도 테스트
+    
+        의외로 setInterval 하고 setTimeout을 클리어 안해주면 막 클릭했을때 버그 발생해서 수정작업이 조금 발생
 
 ![반응속도테스트](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/c091f0e5-1f14-4d98-b4aa-d72a3e9f622b)
 
+    5. 게임4 퍼즐 게임
+    
+        grid를 쓰면 의외로 보드 제작은 어렵지 않았으나
+        드래그 이벤트 시 서로 객체만 바꾸는게 생각보다 많이 어려웠음
+
+![퍼즐게임](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/75514082-6460-41b3-9e3a-428e723a5725)
 
 
 ## 테스트 
