@@ -65,7 +65,8 @@
 
     4. 게임3 반응속도 테스트
 
-![반응속도테스트](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/02533fa3-4bf7-4aa0-a2d3-e8bfc0526df4)
+![반응속도테스트](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/c091f0e5-1f14-4d98-b4aa-d72a3e9f622b)
+
 
 
 ## 테스트 
