@@ -100,7 +100,7 @@ const ground = Bodies.rectangle(main.clientWidth / 2, main.clientHeight + 40, ma
 });
 
 // 게임오버 라인
-const overLine = Bodies.rectangle(main.clientWidth / 2, 50, main.clientWidth, 1, {
+const overLine = Bodies.rectangle(main.clientWidth / 2, 30, main.clientWidth, 1, {
     name: "overLine",
     isStatic: true,
     isSensor: true,
@@ -136,7 +136,7 @@ let currentCircle = null;
 // 재활용 하려고 만든 박스 생성
 function addBody(index, value, x) {
     let circle = CIRCLES[index];
-    const body = Bodies.circle(x, 20, circle.radius, {
+    const body = Bodies.circle(x, 15, circle.radius, {
         index: index,
         isSleeping: value,
         render: {
@@ -207,7 +207,7 @@ function dropBox(e) {
         setTimeout(() => {
             addCicle();
             isClick = true;
-        }, 1000)
+        }, 500)
         isClick = false;
     }
 }

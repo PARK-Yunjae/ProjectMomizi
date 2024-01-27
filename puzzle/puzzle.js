@@ -21,6 +21,7 @@ const dragged = {
     index: null
 };
 
+let isMobileSelect = false;
 resizing();
 
 start.addEventListener("click", () => {
@@ -124,13 +125,22 @@ puzzle.addEventListener("dragstart", e => {
 })
 
 puzzle.addEventListener('touchstart', e => {
-    console.log(isMobile);
     if (!isReady || !isMobile) return;
-    const obj = e.target;
 
-    dragged.el = obj;
-    dragged.class = obj.className;
-    dragged.index = [...obj.parentNode.children].indexOf(obj);
+    if (!isMobileSelect) {
+        isMobileSelect = true;
+        const obj = e.target;
+
+        dragged.el = obj;
+        dragged.class = obj.className;
+        dragged.index = [...obj.parentNode.children].indexOf(obj);
+    } else {
+        isMobileSelect = false;
+
+        changePuzzle(e);
+
+        checkIndex();
+    }
 });
 
 puzzle.addEventListener("dragover", e => {
@@ -139,22 +149,8 @@ puzzle.addEventListener("dragover", e => {
     e.preventDefault();
 })
 
-puzzle.addEventListener("touchmove", e => {
-    if (!isReady || !isMobile) return;
-
-    e.preventDefault();
-})
-
 puzzle.addEventListener("drop", e => {
     if (!isReady || isMobile) return;
-
-    changePuzzle(e);
-
-    checkIndex();
-})
-
-puzzle.addEventListener("touchend", e => {
-    if (!isReady || !isMobile) return;
 
     changePuzzle(e);
 
