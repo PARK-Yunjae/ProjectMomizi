@@ -123,19 +123,9 @@ function gameStart() {
 }
 
 // 실행
-start.addEventListener("mouseup", () => {
-    if (isMobile) {
-        e.preventDefault();
-        return;
-    }
-
+start.addEventListener("mouseup", (e) => {
     if (isReady) {
-        gameStart();
-    }
-})
-
-start.addEventListener("touchend", (e) => {
-    if (isReady) {
+        main.style.opacity = 1;
         gameStart();
     }
 })
@@ -179,7 +169,6 @@ let isClick = true;
 function moveTarget(e) {
     let body = document.querySelector("body");
 
-    console.log("들어오나");
     let x = (body.offsetWidth / 2) - (main.clientWidth / 2);
 
     if (isClick) {
@@ -270,6 +259,7 @@ Matter.Events.on(engine, "collisionStart", (e) => {
 
         // 패배
         if (isClick && (collision.bodyA.name === "overLine" || collision.bodyB.name === "overLine")) {
+            main.style.opacity = 0;
             Matter.World.clear(world);
             Engine.clear(engine);
             Render.stop(render);
@@ -286,6 +276,7 @@ Matter.Events.on(engine, "collisionStart", (e) => {
         }
         // 승리
         if (win == 2) {
+            main.style.opacity = 0;
             Matter.World.clear(world);
             Engine.clear(engine);
             Render.stop(render);

@@ -1,0 +1,43 @@
+main{
+    position: absolute;
+    top: 60px;
+    width: 450px;
+    height: 800px;
+    left: 50%;
+    transform: translate(-50%);
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+}
+.count{
+    width: 0%;
+    height: 20px;
+    display: flex;
+    background-color: pink;
+    direction: 1s;
+}
+
+.speed{
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    background-color: pink;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 3em;
+    opacity: 0.5;
+}
+
+@media screen and (max-width: 768px) {
+    main{
+        width: 96%;
+    }
+}
+
+@media screen and (max-height: 799px) {
+    main{
+        height: 78%;
+    }
+}
