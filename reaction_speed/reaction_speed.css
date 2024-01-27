@@ -14,7 +14,7 @@ main{
     height: 20px;
     display: flex;
     background-color: pink;
-    direction: 1s;
+    transition: 1s;
 }
 
 .speed{
@@ -22,17 +22,23 @@ main{
     height: 100%;
     padding: 30px;
     background-color: pink;
+    background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     font-size: 3em;
     opacity: 0.5;
+    overflow: hidden;
 }
 
 @media screen and (max-width: 768px) {
     main{
         width: 96%;
+    }
+
+    .speed{
+        font-size: 2em;
     }
 }
 

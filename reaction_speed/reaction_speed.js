@@ -47,6 +47,7 @@ speed.addEventListener("click", () => {
 function initGame() {
     count = 0;
     isClick = false;
+    strong.innerHTML = `화면이 바뀌면<br>클릭`;
     clearInterval(interval);
     clearTimeout(timeout);
     bar.style.width = 0;
@@ -84,7 +85,5 @@ function endGame() {
     }
     score = parseInt(score / times.length);
 
-    initGame();
     strong.innerHTML = `${score} ms 초`;
-
 }
