@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 html {
@@ -47,6 +48,9 @@ button:hover{
 }
 
 @media screen and (max-width: 768px) {
+    body{
+        overflow: hidden;
+    }
     button{
         width: 200px;
         height: 200px;

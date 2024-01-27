@@ -21,8 +21,9 @@ const dragged = {
     index: null
 };
 
+resizing();
+
 start.addEventListener("click", () => {
-    resizing();
     start.style.top = "-100px";
     initPuzzle();
     startPuzzle();
@@ -123,6 +124,7 @@ puzzle.addEventListener("dragstart", e => {
 })
 
 puzzle.addEventListener('touchstart', e => {
+    console.log(isMobile);
     if (!isReady || !isMobile) return;
     const obj = e.target;
 
@@ -133,6 +135,12 @@ puzzle.addEventListener('touchstart', e => {
 
 puzzle.addEventListener("dragover", e => {
     if (!isReady || isMobile) return;
+
+    e.preventDefault();
+})
+
+puzzle.addEventListener("touchmove", e => {
+    if (!isReady || !isMobile) return;
 
     e.preventDefault();
 })
@@ -155,6 +163,8 @@ puzzle.addEventListener("touchend", e => {
 
 function changePuzzle(e) {
     const obj = e.target;
+    console.log(obj.className)
+    console.log(dragged.class)
     if (obj.className !== dragged.class) {
         let originPlace;
         let isLast = false;
