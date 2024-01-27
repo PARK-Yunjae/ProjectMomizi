@@ -190,11 +190,7 @@ function moveTarget(e) {
 
 // 마우스 따라다니기
 main.addEventListener("mousemove", (e) => {
-    if (isMobile) {
-        e.preventDefault();
-        return;
-    }
-    if (isGameOver) return;
+    if (isGameOver || isMobile) return;
 
     moveTarget(e);
 
@@ -235,11 +231,7 @@ function dropBox(e) {
 
 // 떨어트리기 - 마우스
 main.addEventListener("mouseup", (e) => {
-    if (isMobile) {
-        e.preventDefault();
-        return;
-    }
-    if (isGameOver) return;
+    if (isGameOver || isMobile) return;
 
     dropBox(e);
 })
