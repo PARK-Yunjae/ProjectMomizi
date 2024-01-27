@@ -14,12 +14,14 @@ class cards {
         this.cardDeck = [];
         this.BOARD_SIZE = 4;
 
+        // 게임 시작 버튼
         this.start.addEventListener("click", () => {
             this.ready = true;
             this.start.style.top = "-1000px";
             this.startGame();
         })
 
+        // 카드 클릭 이벤트
         this.board.addEventListener("click", e => {
             if (this.isFlip === false) {
                 return;
@@ -64,7 +66,6 @@ class cards {
 
     startTimer() {
         this.timerInterval = setInterval(() => {
-            console.log(this.time);
             this.timer.innerHTML = this.time--;
 
             if (this.time <= 0) {

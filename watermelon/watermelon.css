@@ -19,6 +19,12 @@ canvas{
     color:black;
 }
 
+/* 모바일에서 이미지 깨지는거 막아보려고 함 */
+main canvas img{ 
+    width: 100%;
+    height: auto;
+}
+
 @media screen and (max-width: 768px) {
     main{
         width: 96%;

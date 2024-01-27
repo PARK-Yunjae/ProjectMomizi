@@ -1,10 +1,11 @@
 // 모듈 종류
+const isMobile = /iPhone|iPad|iPod|Android/i.test(window.navigator.userAgent);
 const Engine = Matter.Engine;
 const Render = Matter.Render;
 const Runner = Matter.Runner;
 const Bodies = Matter.Bodies;
 const Composite = Matter.Composite;
-let isGameOver = false;
+let isGameOver = true;
 let isMouseOver = false;
 let isReady = true;
 let win = 0;
@@ -112,14 +113,30 @@ const overLine = Bodies.rectangle(main.clientWidth / 2, 100, main.clientWidth, 1
 // 월드에 추가
 const runner = Runner.create();
 
+function gameStart() {
+    isGameOver = false;
+    start.style.top = "-1000px";
+    Matter.World.add(world, [leftWall, rightWall, ground, overLine]);
+    Render.run(render);
+    Runner.run(runner, engine);
+    score.innerHTML = 0;
+}
+
 // 실행
-start.addEventListener("click", () => {
+start.addEventListener("mouseup", () => {
+    if (isMobile) {
+        e.preventDefault();
+        return;
+    }
+
     if (isReady) {
-        start.style.top = "-1000px";
-        Matter.World.add(world, [leftWall, rightWall, ground, overLine]);
-        Render.run(render);
-        Runner.run(runner, engine);
-        score.innerHTML = 0;
+        gameStart();
+    }
+})
+
+start.addEventListener("touchend", (e) => {
+    if (isReady) {
+        gameStart();
     }
 })
 
@@ -158,22 +175,39 @@ addCicle();
 
 let isClick = true;
 
-// 마우스 따라다니기
-main.addEventListener("mousemove", (e) => {
-    if (isGameOver) return;
+// 무브 이벤트
+function moveTarget(e) {
     let body = document.querySelector("body");
 
+    console.log("들어오나");
     let x = (body.offsetWidth / 2) - (main.clientWidth / 2);
 
     if (isClick) {
         if (e.clientX - x - currentCircle.radius - 11 > 0 && e.clientX - x + currentCircle.radius < main.clientWidth - 11)
             currentBody.position.x = e.clientX - x;
     }
+}
+
+// 마우스 따라다니기
+main.addEventListener("mousemove", (e) => {
+    if (isMobile) {
+        e.preventDefault();
+        return;
+    }
+    if (isGameOver) return;
+
+    moveTarget(e);
 
 });
 
-// 떨어트리기
-main.addEventListener("mouseup", (e) => {
+// 터치 이벤트 시도
+main.addEventListener("touchmove", e => {
+    if (isGameOver) return;
+    moveTarget(e);
+})
+
+// 박스 추락 이벤트도 터치 마우스 구분
+function dropBox(e) {
     let index = currentBody.index;
     let body = document.querySelector("body");
     let x = e.clientX - ((body.offsetWidth / 2) - (main.clientWidth / 2));
@@ -197,7 +231,24 @@ main.addEventListener("mouseup", (e) => {
         }, 1000)
         isClick = false;
     }
+}
 
+// 떨어트리기 - 마우스
+main.addEventListener("mouseup", (e) => {
+    if (isMobile) {
+        e.preventDefault();
+        return;
+    }
+    if (isGameOver) return;
+
+    dropBox(e);
+})
+
+// 떨어트리기 - 터치
+main.addEventListener("touchend", (e) => {
+    if (isGameOver) return;
+
+    dropBox(e);
 })
 
 // 합치기 이벤트
@@ -249,6 +300,7 @@ Matter.Events.on(engine, "collisionStart", (e) => {
             scoreNum = 0;
             // 점수 확인 용
             isReady = false;
+            isGameOver = false;
             setTimeout(() => {
                 isReady = true;
             }, 1000);
@@ -264,6 +316,7 @@ Matter.Events.on(engine, "collisionStart", (e) => {
             scoreNum = 0;
             // 점수 확인 용
             isReady = false;
+            isGameOver = false;
             setTimeout(() => {
                 isReady = true;
             }, 1000);
