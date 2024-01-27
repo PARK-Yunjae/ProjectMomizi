@@ -13,7 +13,7 @@ let timeout = null;
 
 // 버튼 클릭시 시작
 start.addEventListener("click", () => {
-    start.style.top = "-100px";
+    start.style.top = "-1000px";
     main.style.opacity = 1;
     initGame();
     startGame();

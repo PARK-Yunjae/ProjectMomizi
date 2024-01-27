@@ -25,7 +25,7 @@ let isMobileSelect = false;
 resizing();
 
 start.addEventListener("click", () => {
-    start.style.top = "-100px";
+    start.style.top = "-1000px";
     initPuzzle();
     startPuzzle();
 })
