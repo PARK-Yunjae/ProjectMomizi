@@ -2,7 +2,7 @@ main{
     position: absolute;
     top: 60px;
     width: 450px;
-    height: 765px;
+    height: 800px;
     left: 50%;
     transform: translate(-50%);
     display: flex;
@@ -19,7 +19,7 @@ menu{
 }
 board{
     width: 100%;
-    height: 100%;
+    height: 550px;
     display: flex;
     flex-wrap: wrap;
 }
@@ -65,5 +65,9 @@ board{
 @media screen and (max-height: 799px) {
     main{
         height: 78%;
+    }
+
+    board{
+        height: calc(100% - 50px);
     }
 }

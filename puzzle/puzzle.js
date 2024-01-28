@@ -74,7 +74,7 @@ function startPuzzle() {
 
         interval = setInterval(() => {
             time.innerHTML = timeNum--;
-            bar.style.width = `${timeNum}%`;
+            bar.style.width = `calc(${timeNum}% - 40px)`;
 
             // 타임 아웃
             if (timeNum == 0) {
