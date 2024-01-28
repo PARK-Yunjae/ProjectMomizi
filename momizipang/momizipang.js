@@ -93,12 +93,6 @@ function resizing() {
 
 // 게임 초기화
 function initBoard() {
-    selectedRow = -1
-    selectedCol = -1
-    posX = -1;
-    posY = -1;
-    movingItems = 0;
-    gameState = "pick";
     isClear = true;
     clearInterval(interval);
     board.innerHTML = "";
