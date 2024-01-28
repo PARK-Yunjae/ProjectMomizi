@@ -76,6 +76,9 @@
 
 ![퍼즐게임](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/75514082-6460-41b3-9e3a-428e723a5725)
 
+    6. 애니팡?
+        리펙토링을 해보기로함 jquery -> vanila javascript 
+
 
 ## 테스트 
     페이지 제작하면서 자체 테스트와 사이크 주소 배포를 통한 피드백 받으면서 진행 합니다.
