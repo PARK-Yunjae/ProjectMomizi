@@ -38,7 +38,7 @@ start.addEventListener("click", () => {
 // 타이머
 function intevals() {
     interval = setInterval(() => {
-        bar.style.width = `calc(${time--}% - 50px)`;
+        bar.style.width = `${time--}%`;
 
         if (time == 0) {
             main.style.opacity = 0;
