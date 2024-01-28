@@ -79,6 +79,9 @@
     6. 애니팡?
         리펙토링을 해보기로함 jquery -> vanila javascript 
 
+![애니팡](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/bad7b81f-97b2-49a6-aeea-52a0a81865c2)
+
+
 
 ## 테스트 
     페이지 제작하면서 자체 테스트와 사이크 주소 배포를 통한 피드백 받으면서 진행 합니다.
