@@ -5,7 +5,7 @@ const board = document.querySelector(".board"); // 게임 맵
 const start = document.querySelector(".startBtn"); // 시작 버튼
 const bar = document.querySelector(".bar"); // 시간?
 
-let blocks = 15; // 깰 블럭 개수
+let blocks = 30; // 깰 블럭 개수
 let level = 1; // 게임 레벨
 let size = 8; // 맵 사이즈 
 let gemSize = 70; // 보석 크기
@@ -37,10 +37,25 @@ start.addEventListener("click", () => {
 
 // 타이머
 function intevals() {
+    // 2초간 클릭 금지
     interval = setInterval(() => {
         bar.style.width = `${time--}%`;
+        text.innerHTML = `${blocks}개`;
 
-        if (time == 0) {
+        clearMaps();
+
+        if (blocks <= 0 && isClear) {
+            if (isClear) {
+                isClear = false;
+                main.style.opacity = 0;
+                clearInterval(interval);
+                start.style.top = "50%";
+                start.innerHTML = "게임 클리어";
+                level++;
+            }
+        }
+
+        if (time == 0 && isClear) {
             main.style.opacity = 0;
             clearInterval(interval);
             start.style.top = "50%";
@@ -50,20 +65,16 @@ function intevals() {
     }, 1000);
 }
 
-// 클리어조건
-function clearGame() {
-    text.innerHTML = `${blocks}개`;
-    if (blocks <= 0) {
-        if (isClear) {
-            isClear = false;
-            main.style.opacity = 0;
-            clearInterval(interval);
-            start.style.top = "50%";
-            start.innerHTML = "게임 클리어";
-            level++;
+// 채워졌는지 확인 - 버그때문에 이것저것 시도중
+function clearMaps() {
+    isClear = true;
+    for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+            if (maps[i][j] == -1) {
+                isClear = false;
+            }
         }
     }
-
 }
 
 // 게임 실행시 화면이 작으면 작은 사이즈에 맞춤
@@ -146,7 +157,7 @@ function creatMaps() {
 
 // 이미지를 레벨별로 정해진 개수만큼 랜덤으로 선택
 function selectGems() {
-    for (let i = 0; i < level + 3; i++) {
+    for (let i = 0; i < 3 + (level / 3); i++) {
         // 이미지 개수
         let rNum = parseInt(Math.random() * 12 + 1);
 
@@ -182,6 +193,7 @@ function createGems() {
             div.style.backgroundSize = "cover";
 
             div.addEventListener("click", e => {
+                isClear = false;
                 if (gameState == "pick" && e.target.matches(".gem")) {
                     posY = parseInt(e.target.style.top);
                     posX = parseInt(e.target.style.left);
@@ -270,6 +282,7 @@ function placeNewGems() {
             gemsPlaced++;
 
             div.addEventListener("click", e => {
+                isClear = false;
                 if (gameState == "pick" && e.target.matches(".gem")) {
                     posY = parseInt(e.target.style.top);
                     posX = parseInt(e.target.style.left);
@@ -300,7 +313,6 @@ function placeNewGems() {
 
     if (gemsPlaced) {
         blocks--;
-        clearGame();
         gameState = "remove";
         checkFalling();
     } else {
