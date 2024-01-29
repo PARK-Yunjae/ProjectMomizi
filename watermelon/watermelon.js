@@ -24,34 +24,34 @@ const CIRCLES = [{
     radius: main.clientWidth / 100 * 3
 }, {
     name: 1,
-    radius: main.clientWidth / 100 * 4.5
+    radius: main.clientWidth / 100 * 5
 }, {
     name: 2,
-    radius: main.clientWidth / 100 * 6
+    radius: main.clientWidth / 100 * 7
 }, {
     name: 3,
-    radius: main.clientWidth / 100 * 7.5
-}, {
-    name: 4,
     radius: main.clientWidth / 100 * 9
 }, {
+    name: 4,
+    radius: main.clientWidth / 100 * 11
+}, {
     name: 5,
-    radius: main.clientWidth / 100 * 10.5
+    radius: main.clientWidth / 100 * 13
 }, {
     name: 6,
-    radius: main.clientWidth / 100 * 12
-}, {
-    name: 7,
-    radius: main.clientWidth / 100 * 13.5
-}, {
-    name: 8,
     radius: main.clientWidth / 100 * 15
 }, {
+    name: 7,
+    radius: main.clientWidth / 100 * 17
+}, {
+    name: 8,
+    radius: main.clientWidth / 100 * 19
+}, {
     name: 9,
-    radius: main.clientWidth / 100 * 16.5
+    radius: main.clientWidth / 100 * 21
 }, {
     name: 10,
-    radius: main.clientWidth / 100 * 18
+    radius: main.clientWidth / 100 * 23
 }, ];
 
 // 엔진 생성
