@@ -1,4 +1,4 @@
-# Project Momizi
+# [Project Momizi](https://park-yunjae.github.io/ProjectMomizi/)
 
 ## 프로젝트 계획 및 시작
 
@@ -87,5 +87,4 @@
     페이지 제작하면서 자체 테스트와 사이크 주소 배포를 통한 피드백 받으면서 진행 합니다.
 ## 배포
     깃을 통해 서버에 올려 디자이너분에게 제공후 공개 요청
-
-    https://park-yunjae.github.io/ProjectMomizi/
+    
