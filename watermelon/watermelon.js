@@ -67,7 +67,8 @@ const render = Render.create({
         background: 'transparent',
         width: main.clientWidth,
         height: main.clientHeight,
-    }
+        pixedRatio: 2,
+    },
 });
 
 const world = engine.world;
@@ -152,7 +153,7 @@ function addBody(index, value, x) {
 
 // 마우스 따라다니는 박스 생성
 function addCicle() {
-    let index = parseInt(Math.random() * 4);
+    let index = parseInt(Math.random() * 3);
 
     addBody(index, true, main.clientWidth / 2);
 
