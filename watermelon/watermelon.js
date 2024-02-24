@@ -17,41 +17,47 @@ const pop = new Audio("../watermelon/pop.wav");
 let scoreNum = 0;
 let main = document.querySelector("main");
 
+let circleArr = [33, 48, 61, 69, 89, 114, 129, 156, 177, 220, 259];
+let scale = 1;
+if(main.clientWidth < 450){ // 모바일용 과일 사이즈 줄여보기
+    scale = main.clientWidth/450;
+}
+console.log(scale);
 
 // 레벨별 과일
 const CIRCLES = [{
     name: 0,
-    radius: 33 / 2
+    radius: circleArr[0] / 2
 }, {
     name: 1,
-    radius: 48 / 2
+    radius: circleArr[1] / 2
 }, {
     name: 2,
-    radius: 61 / 2
+    radius: circleArr[2] / 2
 }, {
     name: 3,
-    radius: 69 / 2
+    radius: circleArr[3] / 2
 }, {
     name: 4,
-    radius: 89 / 2
+    radius: circleArr[4] / 2
 }, {
     name: 5,
-    radius: 114 / 2
+    radius: circleArr[5] / 2
 }, {
     name: 6,
-    radius: 129 / 2
+    radius: circleArr[6] / 2
 }, {
     name: 7,
-    radius: 156 / 2
+    radius: circleArr[7] / 2
 }, {
     name: 8,
-    radius: 177 / 2
+    radius: circleArr[8] / 2
 }, {
     name: 9,
-    radius: 220 / 2
+    radius: circleArr[9] / 2
 }, {
     name: 10,
-    radius: 259 / 2
+    radius: circleArr[10] / 2
 }, ];
 
 // 엔진 생성
@@ -67,7 +73,7 @@ const render = Render.create({
         background: 'transparent',
         width: main.clientWidth,
         height: main.clientHeight,
-        pixedRatio: 2,
+        pixedRatio: 0.7,
     },
 });
 
@@ -142,7 +148,9 @@ function addBody(index, value, x) {
         isSleeping: value,
         render: {
             sprite: {
-                texture: `../img/watermelon_Img/${circle.name}.png`
+                texture: `../img/watermelon_Img/${circle.name}.png`,
+                xScale: scale,
+                yScale: scale
             }
         },
         restitution: 0.7
@@ -243,7 +251,9 @@ Matter.Events.on(engine, "collisionStart", (e) => {
                     index: index + 1,
                     render: {
                         sprite: {
-                            texture: `../img/watermelon_Img/${newCircle.name}.png`
+                            texture: `../img/watermelon_Img/${newCircle.name}.png`,
+                            xScale: scale,
+                            yScale: scale
                         }
                     },
                 }

@@ -42,7 +42,7 @@ main{
     }
 }
 
-@media screen and (max-height: 799px) {
+@media screen and (max-height: 850px) {
     main{
         height: 78%;
     }
