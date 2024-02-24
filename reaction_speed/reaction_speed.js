@@ -10,6 +10,7 @@ let time = 0;
 let isClick = false;
 let interval = null;
 let timeout = null;
+let timeInterval = null;
 
 // 버튼 클릭시 시작
 start.addEventListener("click", () => {
@@ -28,9 +29,11 @@ speed.addEventListener("click", () => {
         return;
     }
     isClick = false;
+    clearInterval(timeInterval);
     clearInterval(interval);
     speed.style.opacity = 0.5;
-    times.push(new Date().getTime() - time);
+    times.push(time);
+    time = 0;
     strong.innerHTML = "화면이 바뀌면<br>클릭";
     speed.style.backgroundImage = "none";
     speed.style.backgroundColor = "pink";
@@ -48,6 +51,7 @@ function initGame() {
     count = 0;
     isClick = false;
     strong.innerHTML = `화면이 바뀌면<br>클릭`;
+    clearInterval(timeInterval);
     clearInterval(interval);
     clearTimeout(timeout);
     bar.style.width = 0;
@@ -60,7 +64,9 @@ function initGame() {
 function startGame() {
     randTime = (Math.random() * 3 + 1) * 1000;
     timeout = setTimeout(() => {
-        time = new Date().getTime();
+        timeInterval = setInterval( () =>{
+            time += 1;
+        },1 );
         isClick = true;
         let randImgIdx = parseInt(Math.random() * 13 + 1);
         speed.style.opacity = 1;

@@ -2,7 +2,7 @@ main{
     position: absolute;
     top: 60px;
     width: 480px;
-    height: 800px;
+    height: 680px;
     left: 50%;
     transform: translate(-50%);
     background-color: rgba(90, 90, 90, 0.5);
@@ -22,7 +22,7 @@ main{
         width: 96%;
     }
 }
-@media screen and (max-height: 799px) {
+@media screen and (max-height: 740px) {
     main{
         height: 85%;
     }
