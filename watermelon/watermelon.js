@@ -21,37 +21,37 @@ let main = document.querySelector("main");
 // 레벨별 과일
 const CIRCLES = [{
     name: 0,
-    radius: main.clientWidth / 100 * 3
+    radius: 33 / 2
 }, {
     name: 1,
-    radius: main.clientWidth / 100 * 5
+    radius: 48 / 2
 }, {
     name: 2,
-    radius: main.clientWidth / 100 * 7
+    radius: 61 / 2
 }, {
     name: 3,
-    radius: main.clientWidth / 100 * 9
+    radius: 69 / 2
 }, {
     name: 4,
-    radius: main.clientWidth / 100 * 11
+    radius: 89 / 2
 }, {
     name: 5,
-    radius: main.clientWidth / 100 * 13
+    radius: 114 / 2
 }, {
     name: 6,
-    radius: main.clientWidth / 100 * 15
+    radius: 129 / 2
 }, {
     name: 7,
-    radius: main.clientWidth / 100 * 17
+    radius: 156 / 2
 }, {
     name: 8,
-    radius: main.clientWidth / 100 * 19
+    radius: 177 / 2
 }, {
     name: 9,
-    radius: main.clientWidth / 100 * 21
+    radius: 220 / 2
 }, {
     name: 10,
-    radius: main.clientWidth / 100 * 23
+    radius: 259 / 2
 }, ];
 
 // 엔진 생성
