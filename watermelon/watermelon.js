@@ -231,7 +231,7 @@ Matter.Events.on(engine, "collisionStart", (e) => {
             Matter.World.remove(world, [collision.bodyA, collision.bodyB]);
 
             const newCircle = CIRCLES[index + 1];
-            scoreNum += (index + 1) * 10;
+            scoreNum += (index + 1) * (index + 1);
             score.innerHTML = scoreNum;
 
             pop.play();
