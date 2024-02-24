@@ -59,7 +59,7 @@ const engine = Engine.create();
 
 // 랜더 생성
 const render = Render.create({
-    name: "canvas2",
+    name: "canvas",
     element: main,
     engine: engine,
     options: {
@@ -141,12 +141,10 @@ function addBody(index, value, x) {
         isSleeping: value,
         render: {
             sprite: {
-                texture: `../img/watermelon_Img/${circle.name}.png`,
-                xScale: circle.radius * 2 / 512,
-                yScale: circle.radius * 2 / 512
+                texture: `../img/watermelon_Img/${circle.name}.png`
             }
         },
-        restitution: 0.5
+        restitution: 0.7
     });
     currentBody = body;
     currentCircle = circle;
@@ -244,9 +242,7 @@ Matter.Events.on(engine, "collisionStart", (e) => {
                     index: index + 1,
                     render: {
                         sprite: {
-                            texture: `../img/watermelon_Img/${newCircle.name}.png`,
-                            xScale: newCircle.radius * 2 / 512,
-                            yScale: newCircle.radius * 2 / 512
+                            texture: `../img/watermelon_Img/${newCircle.name}.png`
                         }
                     },
                 }
