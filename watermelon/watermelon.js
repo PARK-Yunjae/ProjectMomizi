@@ -73,7 +73,6 @@ const render = Render.create({
         background: 'transparent',
         width: main.clientWidth,
         height: main.clientHeight,
-        pixedRatio: 0.7,
     },
 });
 
