@@ -17,10 +17,10 @@ const pop = new Audio("../watermelon/pop.wav");
 let scoreNum = 0;
 let main = document.querySelector("main");
 
-let circleArr = [33, 48, 61, 69, 89, 114, 129, 156, 177, 220, 259]; // 이 값들이 각 이미지의 '지름'이라고 가정
-let globalResponsiveScale = 1; // 이전의 'scale' 변수 이름을 변경하여 혼동 방지
-if(main.clientWidth < 450){
-    globalResponsiveScale = main.clientWidth/450;
+let circleArr = [33, 48, 61, 69, 89, 114, 129, 156, 177, 220, 259];
+let scale = 1;
+if(main.clientWidth < 450){ // 모바일용 과일 사이즈 줄여보기
+    scale = main.clientWidth/450;
 }
 console.log(scale);
 
@@ -121,7 +121,6 @@ const runner = Runner.create();
 
 function gameStart() {
     isGameOver = false;
-    scoreNum = 0;
     start.style.top = "-1000px";
     Matter.World.add(world, [leftWall, rightWall, ground, overLine]);
     Render.run(render);
@@ -140,39 +139,17 @@ start.addEventListener("mouseup", (e) => {
 let currentBody = null;
 let currentCircle = null;
 
+// 재활용 하려고 만든 박스 생성
 function addBody(index, value, x) {
-    let circle = CIRCLES[index]; // CIRCLES[index].radius는 물리 객체의 반지름
-    
-    // 해당 과일의 물리 객체 지름
-    const bodyDiameter = circle.radius * 2; 
-    
-    // 해당 과일 이미지의 원본 크기 (circleArr의 값이 이미지의 실제 지름과 같다고 가정)
-    // 예를 들어, circleArr[0] = 33 이면, 0.png 이미지의 원본 지름(너비/높이)도 33px이라고 가정
-    const originalImageDimension = circleArr[index]; 
-
-    let bodySpriteXScale;
-    let bodySpriteYScale;
-
-    if (!originalImageDimension || originalImageDimension === 0) {
-        // originalImageDimension 값이 유효하지 않을 경우 (예: 0 또는 undefined)
-        // 오류를 방지하기 위해 기본 globalResponsiveScale만 사용하거나, 적절한 기본값을 설정합니다.
-        console.error("Error: Original image dimension is 0 or undefined for index", index, ". Using default responsive scale.");
-        bodySpriteXScale = globalResponsiveScale; // 기존의 'scale' 변수
-        bodySpriteYScale = globalResponsiveScale; // 기존의 'scale' 변수
-    } else {
-        // 정상적인 경우: (물리 객체 지름 / 이미지 원본 지름) * 전체 반응형 스케일
-        bodySpriteXScale = (bodyDiameter / originalImageDimension) * globalResponsiveScale;
-        bodySpriteYScale = (bodyDiameter / originalImageDimension) * globalResponsiveScale;
-    }
-
+    let circle = CIRCLES[index];
     const body = Bodies.circle(x, 15, circle.radius, {
         index: index,
         isSleeping: value,
         render: {
             sprite: {
                 texture: `../img/watermelon_Img/${circle.name}.png`,
-                xScale: bodySpriteXScale, // 수정된 스케일 값 적용
-                yScale: bodySpriteYScale  // 수정된 스케일 값 적용
+                xScale: scale,
+                yScale: scale
             }
         },
         restitution: 0.7
