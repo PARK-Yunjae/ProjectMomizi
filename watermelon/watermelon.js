@@ -121,6 +121,7 @@ const runner = Runner.create();
 
 function gameStart() {
     isGameOver = false;
+    scoreNum = 0;
     start.style.top = "-1000px";
     Matter.World.add(world, [leftWall, rightWall, ground, overLine]);
     Render.run(render);
@@ -140,19 +141,28 @@ let currentBody = null;
 let currentCircle = null;
 
 function addBody(index, value, x) {
-    let circle = CIRCLES[index]; // CIRCLES[index].radius 는 물리 객체의 반지름
+    let circle = CIRCLES[index]; // CIRCLES[index].radius는 물리 객체의 반지름
     
-    // 해당 과일의 목표 지름 (물리 객체의 지름)
+    // 해당 과일의 물리 객체 지름
     const bodyDiameter = circle.radius * 2; 
     
-    // 해당 과일 이미지의 원본 크기 (circleArr[index]가 원본 이미지의 지름과 동일하다고 가정)
-    // 만약 모든 이미지가 정사각형이고, circleArr[index]가 그 정사각형의 한 변 길이라면:
+    // 해당 과일 이미지의 원본 크기 (circleArr의 값이 이미지의 실제 지름과 같다고 가정)
+    // 예를 들어, circleArr[0] = 33 이면, 0.png 이미지의 원본 지름(너비/높이)도 33px이라고 가정
     const originalImageDimension = circleArr[index]; 
 
-    // 만약 originalImageDimension이 0이거나 정의되지 않는 경우를 대비한 방어 코드
+    let bodySpriteXScale;
+    let bodySpriteYScale;
+
     if (!originalImageDimension || originalImageDimension === 0) {
-        console.error("Error: Original image dimension is not valid for index", index);
-        // 기본 스케일 또는 오류 처리
+        // originalImageDimension 값이 유효하지 않을 경우 (예: 0 또는 undefined)
+        // 오류를 방지하기 위해 기본 globalResponsiveScale만 사용하거나, 적절한 기본값을 설정합니다.
+        console.error("Error: Original image dimension is 0 or undefined for index", index, ". Using default responsive scale.");
+        bodySpriteXScale = globalResponsiveScale; // 기존의 'scale' 변수
+        bodySpriteYScale = globalResponsiveScale; // 기존의 'scale' 변수
+    } else {
+        // 정상적인 경우: (물리 객체 지름 / 이미지 원본 지름) * 전체 반응형 스케일
+        bodySpriteXScale = (bodyDiameter / originalImageDimension) * globalResponsiveScale;
+        bodySpriteYScale = (bodyDiameter / originalImageDimension) * globalResponsiveScale;
     }
 
     const body = Bodies.circle(x, 15, circle.radius, {
@@ -161,9 +171,8 @@ function addBody(index, value, x) {
         render: {
             sprite: {
                 texture: `../img/watermelon_Img/${circle.name}.png`,
-                // 각 이미지의 xScale과 yScale을 (물리 객체 지름 / 이미지 원본 크기) * 전체 반응형 스케일로 설정
-                xScale: (bodyDiameter / originalImageDimension) * globalResponsiveScale,
-                yScale: (bodyDiameter / originalImageDimension) * globalResponsiveScale
+                xScale: bodySpriteXScale, // 수정된 스케일 값 적용
+                yScale: bodySpriteYScale  // 수정된 스케일 값 적용
             }
         },
         restitution: 0.7
