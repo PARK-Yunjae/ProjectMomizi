@@ -17,10 +17,10 @@ const pop = new Audio("../watermelon/pop.wav");
 let scoreNum = 0;
 let main = document.querySelector("main");
 
-let circleArr = [33, 48, 61, 69, 89, 114, 129, 156, 177, 220, 259];
-let scale = 1;
-if(main.clientWidth < 450){ // 모바일용 과일 사이즈 줄여보기
-    scale = main.clientWidth/450;
+let circleArr = [33, 48, 61, 69, 89, 114, 129, 156, 177, 220, 259]; // 이 값들이 각 이미지의 '지름'이라고 가정
+let globalResponsiveScale = 1; // 이전의 'scale' 변수 이름을 변경하여 혼동 방지
+if(main.clientWidth < 450){
+    globalResponsiveScale = main.clientWidth/450;
 }
 console.log(scale);
 
@@ -139,17 +139,31 @@ start.addEventListener("mouseup", (e) => {
 let currentBody = null;
 let currentCircle = null;
 
-// 재활용 하려고 만든 박스 생성
 function addBody(index, value, x) {
-    let circle = CIRCLES[index];
+    let circle = CIRCLES[index]; // CIRCLES[index].radius 는 물리 객체의 반지름
+    
+    // 해당 과일의 목표 지름 (물리 객체의 지름)
+    const bodyDiameter = circle.radius * 2; 
+    
+    // 해당 과일 이미지의 원본 크기 (circleArr[index]가 원본 이미지의 지름과 동일하다고 가정)
+    // 만약 모든 이미지가 정사각형이고, circleArr[index]가 그 정사각형의 한 변 길이라면:
+    const originalImageDimension = circleArr[index]; 
+
+    // 만약 originalImageDimension이 0이거나 정의되지 않는 경우를 대비한 방어 코드
+    if (!originalImageDimension || originalImageDimension === 0) {
+        console.error("Error: Original image dimension is not valid for index", index);
+        // 기본 스케일 또는 오류 처리
+    }
+
     const body = Bodies.circle(x, 15, circle.radius, {
         index: index,
         isSleeping: value,
         render: {
             sprite: {
                 texture: `../img/watermelon_Img/${circle.name}.png`,
-                xScale: scale,
-                yScale: scale
+                // 각 이미지의 xScale과 yScale을 (물리 객체 지름 / 이미지 원본 크기) * 전체 반응형 스케일로 설정
+                xScale: (bodyDiameter / originalImageDimension) * globalResponsiveScale,
+                yScale: (bodyDiameter / originalImageDimension) * globalResponsiveScale
             }
         },
         restitution: 0.7
