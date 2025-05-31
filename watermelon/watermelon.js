@@ -17,48 +17,32 @@ const pop = new Audio("../watermelon/pop.wav");
 let scoreNum = 0;
 let main = document.querySelector("main");
 
-let circleArr = [33, 48, 61, 69, 89, 114, 129, 156, 177, 220, 259];
-let scale = 1;
-if(main.clientWidth < 450){ // 모바일용 과일 사이즈 줄여보기
-    scale = main.clientWidth/450;
-}
-console.log(scale);
+// 기존 circleArr은 기본 지름 배열로 사용 (예: 기준 너비 450px일 때의 지름)
+let baseDiameters = [33, 48, 61, 69, 89, 114, 129, 156, 177, 220, 259];
+let currentGlobalScale = 1; // 현재 전역 스케일 값 (초기엔 1)
 
-// 레벨별 과일
-const CIRCLES = [{
-    name: 0,
-    radius: circleArr[0] / 2
-}, {
-    name: 1,
-    radius: circleArr[1] / 2
-}, {
-    name: 2,
-    radius: circleArr[2] / 2
-}, {
-    name: 3,
-    radius: circleArr[3] / 2
-}, {
-    name: 4,
-    radius: circleArr[4] / 2
-}, {
-    name: 5,
-    radius: circleArr[5] / 2
-}, {
-    name: 6,
-    radius: circleArr[6] / 2
-}, {
-    name: 7,
-    radius: circleArr[7] / 2
-}, {
-    name: 8,
-    radius: circleArr[8] / 2
-}, {
-    name: 9,
-    radius: circleArr[9] / 2
-}, {
-    name: 10,
-    radius: circleArr[10] / 2
-}, ];
+if(main.clientWidth < 450){ // 모바일용 과일 사이즈 줄여보기
+    currentGlobalScale  = main.clientWidth/450;
+}
+
+// CIRCLES 배열은 이제 동적으로 현재 스케일에 맞는 반지름을 제공하도록 하거나,
+// Bodies를 생성할 때 직접 스케일링된 반지름을 사용합니다.
+// 편의를 위해 CIRCLES 정의는 그대로 두되, 사용할 때 스케일을 곱해줍니다.
+const CIRCLES = baseDiameters.map((diameter, index) => ({
+    name: index,
+    baseRadius: diameter / 2 // 기본 반지름 값
+}));
+
+// main.clientWidth를 기준으로 currentGlobalScale을 업데이트하는 함수
+function updateGlobalScale() {
+    const referenceWidth = 450; // 기준 너비
+    if (main.clientWidth < referenceWidth) {
+        currentGlobalScale = main.clientWidth / referenceWidth;
+    } else {
+        currentGlobalScale = 1;
+    }
+    // console.log("Updated currentGlobalScale:", currentGlobalScale);
+}
 
 // 엔진 생성
 const engine = Engine.create();
@@ -73,6 +57,10 @@ const render = Render.create({
         background: 'transparent',
         width: main.clientWidth,
         height: main.clientHeight,
+        // pixelRatio를 'auto'로 설정하거나 window.devicePixelRatio 값을 직접 지정합니다.
+        // 'auto'로 설정하면 Matter.js가 자동으로 브라우저의 DPR 값을 사용하려고 시도합니다.
+        // 더 명확하게 하려면 window.devicePixelRatio를 직접 할당하는 것이 좋습니다.
+        pixelRatio: window.devicePixelRatio || 1 // DPR 설정 추가!
     },
 });
 
@@ -120,6 +108,7 @@ const overLine = Bodies.rectangle(main.clientWidth / 2, 30, main.clientWidth, 1,
 const runner = Runner.create();
 
 function gameStart() {
+    updateGlobalScale();
     isGameOver = false;
     start.style.top = "-1000px";
     Matter.World.add(world, [leftWall, rightWall, ground, overLine]);
@@ -141,21 +130,26 @@ let currentCircle = null;
 
 // 재활용 하려고 만든 박스 생성
 function addBody(index, value, x) {
-    let circle = CIRCLES[index];
-    const body = Bodies.circle(x, 15, circle.radius, {
+    let circleDef = CIRCLES[index];
+    // 물리 객체의 반지름에도 currentGlobalScale 적용
+    const scaledRadius = circleDef.baseRadius * currentGlobalScale;
+
+    const body = Bodies.circle(x, 15, scaledRadius , {
         index: index,
         isSleeping: value,
         render: {
             sprite: {
-                texture: `../img/watermelon_Img/${circle.name}.png`,
-                xScale: scale,
-                yScale: scale
+                texture: `../img/watermelon_Img/${circleDef.name}.png`,
+                // 스프라이트 스케일도 currentGlobalScale을 사용합니다.
+                // 이렇게 하면 원본 이미지 크기를 기준으로 물리 객체 크기에 맞게 이미지가 스케일링됩니다.
+                xScale: currentGlobalScale ,
+                yScale: currentGlobalScale 
             }
         },
         restitution: 0.7
     });
     currentBody = body;
-    currentCircle = circle;
+    currentCircle = { ...circleDef, radius: scaledRadius }; // 현재 사용되는 원의 실제 (스케일된) 반지름 업데이트
 }
 
 // 마우스 따라다니는 박스 생성
@@ -238,7 +232,10 @@ Matter.Events.on(engine, "collisionStart", (e) => {
 
             Matter.World.remove(world, [collision.bodyA, collision.bodyB]);
 
-            const newCircle = CIRCLES[index + 1];
+            const nextCircleDef = CIRCLES[index + 1];
+            // 여기도 스케일된 반지름 사용
+            const scaledRadiusForNew = nextCircleDef.baseRadius * currentGlobalScale;
+
             scoreNum += (index + 1) * (index + 1);
             score.innerHTML = scoreNum;
 
@@ -246,13 +243,13 @@ Matter.Events.on(engine, "collisionStart", (e) => {
             const newBody = Bodies.circle(
                 collision.collision.supports[0].x,
                 collision.collision.supports[0].y,
-                newCircle.radius, {
+                scaledRadiusForNew, {// scaledRadiusForNew 사용
                     index: index + 1,
                     render: {
                         sprite: {
-                            texture: `../img/watermelon_Img/${newCircle.name}.png`,
-                            xScale: scale,
-                            yScale: scale
+                            texture: `../img/watermelon_Img/${nextCircleDef.name}.png`,
+                            xScale: currentGlobalScale ,
+                            yScale: currentGlobalScale
                         }
                     },
                 }
@@ -297,3 +294,49 @@ Matter.Events.on(engine, "collisionStart", (e) => {
         }
     });
 })
+
+function handleResize() {
+    if (isGameOver && !isReady) return; // 게임오버/승리 화면 등에서는 실행 안함
+
+    // 1. main 요소의 현재 CSS 픽셀 크기 가져오기
+    const newWidth = main.clientWidth;
+    const newHeight = main.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
+
+    // 2. Matter.js 렌더러 옵션 업데이트 (CSS 픽셀 기준)
+    render.options.width = newWidth;
+    render.options.height = newHeight;
+    render.options.pixelRatio = dpr; // DPR도 여기서 다시 설정해주는 것이 안전할 수 있습니다.
+
+    // 3. 캔버스 요소의 실제 드로잉 버퍼 크기 업데이트 (실제 픽셀 기준)
+    if (render.canvas) { // render.canvas가 존재하는지 확인
+        render.canvas.width = newWidth * dpr;
+        render.canvas.height = newHeight * dpr;
+
+        // 4. 캔버스 요소의 화면 표시 CSS 크기 업데이트 (CSS 픽셀 기준) <- 중요!
+        render.canvas.style.width = newWidth + 'px';
+        render.canvas.style.height = newHeight + 'px';
+    }
+
+    // 5. 전역 스케일 업데이트 (과일 크기 등을 위해)
+    updateGlobalScale(); // 이전에 만든 함수가 있다면 호출
+
+    // 6. 벽, 바닥 등 물리 객체 위치 및 크기 업데이트
+    //    (이전 답변에서 제안한 Body.setPosition, Body.setVertices 등 로직...)
+    //    예시:
+    if (leftWall) Body.setPosition(leftWall, { x: -40, y: newHeight / 2 }); // newHeight 사용
+    // ... (rightWall, ground, overLine 등도 newWidth, newHeight 기준으로 업데이트)
+
+    // 7. 현재 떠 있는 과일(currentBody) 위치/크기 보정 (필요시)
+    if (currentBody && currentCircle) {
+        currentCircle.radius = CIRCLES[currentBody.index].baseRadius * currentGlobalScale; // currentGlobalScale은 updateGlobalScale()에서 업데이트됨
+
+        let x = currentBody.position.x;
+        const radius = currentCircle.radius;
+        if (x < radius) x = radius;
+        if (x > newWidth - radius) x = newWidth - radius; // newWidth 사용
+        Body.setPosition(currentBody, { x: x, y: currentBody.position.y });
+    }
+}
+
+window.addEventListener('resize', handleResize);
