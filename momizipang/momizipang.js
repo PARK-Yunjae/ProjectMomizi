@@ -218,6 +218,36 @@ function createGems() {
                     }
                 }
             })
+            // [1. 추가] 모바일 스와이프(드래그) 지원
+            let touchStartX = 0;
+            let touchStartY = 0;
+            
+            div.addEventListener("touchstart", (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, {passive: false});
+            
+            div.addEventListener("touchend", (e) => {
+                if(gameState !== "pick") return;
+                const diffX = e.changedTouches[0].screenX - touchStartX;
+                const diffY = e.changedTouches[0].screenY - touchStartY;
+                
+                if(Math.abs(diffX) < 30 && Math.abs(diffY) < 30) return; // 너무 짧으면 무시
+            
+                const r = parseInt(div.style.top) / gemSize;
+                const c = parseInt(div.style.left) / gemSize;
+                let tr = r, tc = c;
+            
+                if (Math.abs(diffX) > Math.abs(diffY)) tc += (diffX > 0) ? 1 : -1;
+                else tr += (diffY > 0) ? 1 : -1;
+            
+                if (tr >= 0 && tr < size && tc >= 0 && tc < size) {
+                    selectedRow = r; selectedCol = c;
+                    posX = tc; posY = tr;
+                    gameState = "switch";
+                    gemSwitch();
+                }
+            }, {passive: false});
         }
     }
 }
@@ -373,23 +403,17 @@ function checkFalling() {
 
 // [수정됨] CSS 애니메이션을 이용한 부드러운 삭제
 function gemFade() {
-    const removeTargets = document.querySelectorAll(".remove"); // jQuery 대신 바닐라 JS 사용
-    let count = removeTargets.length;
-
-    if (count === 0) {
-        checkMoving();
-        return;
+    const removeTargets = document.querySelectorAll(".remove");
+    if (removeTargets.length === 0) {
+        checkMoving(); return;
     }
-
     removeTargets.forEach(el => {
         movingItems++;
-        el.classList.add("remove-effect"); // CSS 애니메이션 실행
-
-        // 0.3초(CSS 시간) 뒤에 실제로 제거
+        el.classList.add("remove-effect"); // CSS 클래스 추가
         setTimeout(() => {
             el.remove();
             checkMoving();
-        }, 300);
+        }, 300); // 0.3초 뒤 삭제
     });
 }
 
@@ -504,4 +528,14 @@ function isHorizontalStreak(row, col) {
 // 확인할게 있나
 function isStreak(row, col) {
     return isVerticalStreak(row, col) || isHorizontalStreak(row, col);
+}
+
+// [3. 추가] 랭킹 함수
+function updateRank(level) {
+    const GAME_KEY = "momizi_pang_rank";
+    let rankData = JSON.parse(localStorage.getItem(GAME_KEY)) || [];
+    // 모미지팡은 '도달한 레벨'을 점수로 저장
+    rankData.push({ score: level, date: new Date().toLocaleDateString() });
+    rankData.sort((a, b) => b.score - a.score);
+    localStorage.setItem(GAME_KEY, JSON.stringify(rankData.slice(0, 5)));
 }
