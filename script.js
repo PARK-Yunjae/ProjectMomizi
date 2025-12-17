@@ -227,22 +227,35 @@ function gameOver() {
 
 
 // [수정] 벽 위치를 화면 '안쪽'으로 배치
+// === script.js (handleResize 함수 교체) ===
+
 function handleResize() {
+    // 컨테이너의 현재 실제 크기 가져오기
     const w = main.clientWidth;
     const h = main.clientHeight;
     
+    // 1. 렌더러(캔버스) 크기 즉시 동기화
     render.canvas.width = w;
     render.canvas.height = h;
+    render.options.width = w;   // 중요: 물리 엔진 옵션도 업데이트
+    render.options.height = h;  // 중요: 물리 엔진 옵션도 업데이트
+
+    // 2. 벽 위치 재조정 (Body.setPosition 활용)
+    // Matter.js는 중심점 기준이므로 정확한 계산 필요
     
-    // 1. 왼쪽 벽: 중심을 두께의 절반(15px) 위치로 -> 0~30px 영역 차지
+    // 왼쪽 벽: 중심점 = 두께 절반
     Body.setPosition(leftWall, { x: WALL_THICK / 2, y: h / 2 });
     
-    // 2. 오른쪽 벽: 중심을 (전체너비 - 두께의 절반) 위치로
+    // 오른쪽 벽: 중심점 = 전체너비 - 두께 절반
     Body.setPosition(rightWall, { x: w - WALL_THICK / 2, y: h / 2 });
     
-    // 3. 바닥: 중심을 (전체높이 - 두께의 절반) 위치로
+    // 바닥: 중심점 = 전체높이 - 두께 절반
     Body.setPosition(ground, { x: w / 2, y: h - WALL_THICK / 2 });
+
+    // 3. (중요) 벽의 '길이'나 '두께'가 초기화 때와 달라질 수 있으므로 스케일링 필요할 수 있으나,
+    // 현재 로직(WALL_LEN = 10000)은 길이가 충분하므로 위치만 옮기면 해결됨.
 }
+
 window.addEventListener("resize", () => { handleResize(); });
 
 // [수정] 랭킹 시스템 (닉네임 포함)
