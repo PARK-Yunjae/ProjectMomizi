@@ -56,6 +56,10 @@ board{
     background-size: 80% auto;
 }
 
+/* CSS 추가 */
+.card.flipped .card_back { transform: rotateY(180deg); }
+.card.flipped .card_front { transform: rotateY(0deg); }
+
 @media screen and (max-width: 768px) {
     main{
         width: 96%;
