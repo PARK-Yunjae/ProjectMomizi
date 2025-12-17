@@ -227,33 +227,31 @@ function gameOver() {
 
 
 // [수정] 벽 위치를 화면 '안쪽'으로 배치
-// === script.js (handleResize 함수 교체) ===
-
 function handleResize() {
-    // 컨테이너의 현재 실제 크기 가져오기
     const w = main.clientWidth;
     const h = main.clientHeight;
+    // 1. 기기 픽셀 비율 가져오기 (없으면 1)
+    const pixelRatio = window.devicePixelRatio || 1;
     
-    // 1. 렌더러(캔버스) 크기 즉시 동기화
-    render.canvas.width = w;
-    render.canvas.height = h;
-    render.options.width = w;   // 중요: 물리 엔진 옵션도 업데이트
-    render.options.height = h;  // 중요: 물리 엔진 옵션도 업데이트
+    // 2. 캔버스 물리적 크기 (고해상도 대응)
+    render.canvas.width = w * pixelRatio;
+    render.canvas.height = h * pixelRatio;
+    
+    // 3. 캔버스 CSS 스타일 크기 (화면 표시용)
+    render.canvas.style.width = `${w}px`;
+    render.canvas.style.height = `${h}px`;
+    
+    // 4. [중요] Context 스케일 복구 (이게 없으면 그림이 작게 나옴!)
+    render.context.scale(pixelRatio, pixelRatio);
 
-    // 2. 벽 위치 재조정 (Body.setPosition 활용)
-    // Matter.js는 중심점 기준이므로 정확한 계산 필요
-    
-    // 왼쪽 벽: 중심점 = 두께 절반
+    // 5. Matter.js 옵션 동기화
+    render.options.width = w;
+    render.options.height = h;
+
+    // 6. 벽 위치 재조정 (기존 로직 유지)
     Body.setPosition(leftWall, { x: WALL_THICK / 2, y: h / 2 });
-    
-    // 오른쪽 벽: 중심점 = 전체너비 - 두께 절반
-    Body.setPosition(rightWall, { x: w - WALL_THICK / 2, y: h / 2 });
-    
-    // 바닥: 중심점 = 전체높이 - 두께 절반
+    Body.setPosition(rightWall, { x: w - WALL_THICK / 2, y: h / 2 }); // 오른쪽 벽 위치 보정
     Body.setPosition(ground, { x: w / 2, y: h - WALL_THICK / 2 });
-
-    // 3. (중요) 벽의 '길이'나 '두께'가 초기화 때와 달라질 수 있으므로 스케일링 필요할 수 있으나,
-    // 현재 로직(WALL_LEN = 10000)은 길이가 충분하므로 위치만 옮기면 해결됨.
 }
 
 window.addEventListener("resize", () => { handleResize(); });
@@ -314,4 +312,6 @@ startBtn.addEventListener("click", () => {
     startGame();
 });
 saveRank(0); // 랭킹 로드
+// [추가] 돔 로드 완료 후 한번 더 확실하게 리사이징
+window.addEventListener('DOMContentLoaded', handleResize);
 handleResize();
