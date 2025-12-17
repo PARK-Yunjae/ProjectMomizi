@@ -205,11 +205,21 @@ class Cards {
                     this.start.onclick = () => location.href = "../index.html";
                     return;
                 }
+                // ★ 랭킹 저장 추가 (점수는 남은 시간)
+                this.saveRank(this.time);
                 this.level++;
             } else {
                 this.start.innerHTML = "게임 오버<br>다시 도전";
             }
         }, 500);
+    }
+    // [Cards 클래스 내부에 메서드 추가]
+    saveRank(score) {
+        const GAME_KEY = "momizi_card_rank";
+        let rankData = JSON.parse(localStorage.getItem(GAME_KEY)) || [];
+        rankData.push({ score: score, date: new Date().toLocaleDateString() });
+        rankData.sort((a, b) => b.score - a.score); // 남은 시간이 많을수록 1등
+        localStorage.setItem(GAME_KEY, JSON.stringify(rankData.slice(0, 5)));
     }
 }
 
