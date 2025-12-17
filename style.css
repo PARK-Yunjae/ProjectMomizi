@@ -1,53 +1,107 @@
-* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+/* 공통 설정 */
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
 body {
-    background-color: #fce4ec; /* 연한 분홍 배경 */
-    display: flex; justify-content: center; align-items: center;
-    height: 100vh; overflow: hidden; font-family: 'Jua', sans-serif; /* 폰트 있으면 적용 */
+    font-family: 'Jua', sans-serif;
+    background-color: #fff3e0; /* 전체 배경색 */
+    height: 100vh;
+    display: flex; flex-direction: column;
+    overflow: hidden; /* 스크롤 방지 */
 }
 
-/* 게임 전체 컨테이너 (스마트폰 비율 유지) */
+/* === 헤더 스타일 === */
+header {
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: relative; z-index: 100;
+}
+
+.header-inner {
+    height: 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 20px;
+}
+
+.logo img { height: 40px; display: block; }
+
+/* 소셜 아이콘 (PC) */
+.social-nav { display: flex; gap: 15px; }
+.social-nav a img { width: 30px; height: 30px; transition: 0.2s; }
+.social-nav a:hover img { transform: scale(1.1); }
+
+/* 햄버거 버튼 (기본 숨김) */
+.menu-trigger {
+    display: none; width: 30px; height: 20px;
+    flex-direction: column; justify-content: space-between;
+    cursor: pointer;
+}
+.menu-trigger span {
+    display: block; width: 100%; height: 3px;
+    background: #333; border-radius: 3px; transition: 0.3s;
+}
+/* 햄버거 X자 변신 */
+.menu-trigger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.menu-trigger.active span:nth-child(2) { opacity: 0; }
+.menu-trigger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+/* 모바일 메뉴 (기본 숨김) */
+.mobile-menu {
+    display: none; /* JS로 토글 */
+    background: #fff;
+    border-top: 1px solid #eee;
+    padding: 10px 0;
+    position: absolute; width: 100%; top: 60px; left: 0;
+    flex-direction: column; align-items: center;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+}
+.mobile-menu.active { display: flex; }
+.mobile-menu a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 15px; width: 100%; justify-content: center;
+    text-decoration: none; color: #333; font-size: 1.2rem;
+}
+.mobile-menu a img { width: 30px; }
+
+/* === 반응형 (모바일) 설정 === */
+@media screen and (max-width: 768px) {
+    .social-nav { display: none; } /* PC 메뉴 숨김 */
+    .menu-trigger { display: flex; } /* 햄버거 보임 */
+}
+
+/* === 게임 영역 스타일 === */
 .game-container {
+    flex: 1; /* 남은 공간 다 차지 */
     position: relative;
-    width: 100%; max-width: 450px; /* 최대 너비 제한 */
-    height: 100%; max-height: 800px;
-    background: #fff3e0;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    width: 100%; max-width: 500px; /* 게임판 최대 너비 */
+    margin: 0 auto; /* 중앙 정렬 */
+    background: rgba(255,255,255,0.5);
+    border-left: 1px solid #ddd; border-right: 1px solid #ddd;
 }
 
-/* 점수판 */
+#game-area { width: 100%; height: 100%; }
+
 .score-board {
-    position: absolute; top: 10px; left: 10px; z-index: 10;
-    font-size: 1.5rem; color: #5d4037; font-weight: bold;
+    position: absolute; top: 15px; left: 15px;
+    font-size: 1.5rem; color: #5d4037; font-weight: bold; z-index: 10;
 }
 
-/* 캔버스 영역 */
-main#game-area {
-    width: 100%; height: 100%;
-    position: relative;
-    overflow: hidden;
-}
-
-/* UI 레이어 (시작화면, 랭킹) */
 #ui-layer {
     position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255,248,225, 0.95);
     display: flex; flex-direction: column;
     justify-content: center; align-items: center;
-    z-index: 20; transition: opacity 0.3s;
+    z-index: 20; transition: 0.3s;
 }
 #ui-layer.hidden { opacity: 0; pointer-events: none; }
 
-.title { font-size: 3rem; margin-bottom: 20px; color: #e53935; }
+.game-title { font-size: 3rem; color: #ef5350; margin-bottom: 20px; }
 #start-btn {
-    padding: 15px 40px; font-size: 1.5rem;
-    background: #4caf50; color: white; border: none; border-radius: 50px;
-    cursor: pointer; box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-    transition: transform 0.1s;
+    padding: 15px 50px; font-size: 1.5rem; font-family: 'Jua';
+    background: #66bb6a; color: white; border: none; border-radius: 50px;
+    cursor: pointer; box-shadow: 0 5px 0 #388e3c;
 }
-#start-btn:active { transform: scale(0.95); }
+#start-btn:active { transform: translateY(5px); box-shadow: none; }
 
-/* 랭킹 스타일 */
-#rank-display { margin-bottom: 30px; text-align: center; }
-.rank-item { font-size: 1.1rem; margin: 5px 0; color: #555; }
-.rank-1 { color: #fbc02d; font-weight: bold; font-size: 1.3rem; } /* 1등 강조 */
+#rank-display { margin-bottom: 30px; text-align: center; width: 80%; }
+.rank-item { font-size: 1.2rem; margin: 8px 0; color: #555; border-bottom: 1px dashed #ccc; padding-bottom: 5px;}
+.rank-1 { color: #fbc02d; font-weight: bold; font-size: 1.4rem; }
