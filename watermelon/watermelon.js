@@ -33,6 +33,12 @@ const CIRCLES = baseDiameters.map((diameter, index) => ({
     baseRadius: diameter / 2 // 기본 반지름 값
 }));
 
+// [1. 추가] 이미지 미리 로딩 (게임 도중 렉 방지)
+CIRCLES.forEach(c => {
+    const img = new Image();
+    img.src = `../img/watermelon_Img/${c.name}.png`;
+});
+
 // main.clientWidth를 기준으로 currentGlobalScale을 업데이트하는 함수
 function updateGlobalScale() {
     const referenceWidth = 450; // 기준 너비
@@ -66,31 +72,20 @@ const render = Render.create({
 
 const world = engine.world;
 
-// 왼쪽벽 - 이름 줘서 반응형으로 크기 줄여보려고 했는데 실패
-const leftWall = Bodies.rectangle(-40, main.clientHeight / 2, 100, main.clientHeight, {
-    name: "leftWall",
-    isStatic: true,
-    render: {
-        fillStyle: "orange"
-    }
+// [2. 교체] 무한의 벽 (화면 리사이즈 시 틈새 방지)
+const wallThick = 100;
+const wallLength = 10000; // 아주 길게 설정
+
+const leftWall = Bodies.rectangle(-40, main.clientHeight / 2, wallThick, wallLength, {
+    name: "leftWall", isStatic: true, render: { fillStyle: "orange" }
 });
 
-// 오른쪽 벽
-const rightWall = Bodies.rectangle(main.clientWidth + 40, main.clientHeight / 2, 100, main.clientHeight, {
-    name: "rightWall",
-    isStatic: true,
-    render: {
-        fillStyle: "orange"
-    }
+const rightWall = Bodies.rectangle(main.clientWidth + 40, main.clientHeight / 2, wallThick, wallLength, {
+    name: "rightWall", isStatic: true, render: { fillStyle: "orange" }
 });
 
-// 바닥
-const ground = Bodies.rectangle(main.clientWidth / 2, main.clientHeight + 40, main.clientWidth, 100, {
-    name: "ground",
-    isStatic: true,
-    render: {
-        fillStyle: "orange"
-    }
+const ground = Bodies.rectangle(main.clientWidth / 2, main.clientHeight + 40, wallLength, wallThick, {
+    name: "ground", isStatic: true, render: { fillStyle: "orange" }
 });
 
 // 게임오버 라인
@@ -267,6 +262,13 @@ Matter.Events.on(engine, "collisionStart", (e) => {
             Runner.stop(runner);
             start.style.top = "50%";
             start.innerHTML = `게임오버<br>${score.innerHTML}점`;
+            // [3. 추가] 랭킹 표시 (패배 시)
+            const ranks = updateRank(scoreNum); // 랭킹 업데이트
+            let rankText = "<br><br>🏆 <b>명예의 전당</b> 🏆<br>";
+            ranks.forEach((r, i) => {
+                rankText += `<div style='font-size:14px; margin-top:5px'>${i+1}위: ${r.score}점 <span style='color:#888'>(${r.date})</span></div>`;
+            });
+            start.innerHTML += rankText; // 기존 텍스트 뒤에 랭킹 추가
             scoreNum = 0;
             // 점수 확인 용
             isReady = false;
@@ -284,6 +286,13 @@ Matter.Events.on(engine, "collisionStart", (e) => {
             Runner.stop(runner);
             start.style.top = "50%";
             start.innerHTML = `승리<br>${score.innerHTML}점`;
+            // [3. 추가] 랭킹 표시 (승리 시) 
+            const ranks = updateRank(scoreNum); // 랭킹 업데이트
+            let rankText = "<br><br>🏆 <b>명예의 전당</b> 🏆<br>";
+            ranks.forEach((r, i) => {
+                rankText += `<div style='font-size:14px; margin-top:5px'>${i+1}위: ${r.score}점 <span style='color:#888'>(${r.date})</span></div>`;
+            });
+            start.innerHTML += rankText; // 기존 텍스트 뒤에 랭킹 추가
             scoreNum = 0;
             // 점수 확인 용
             isReady = false;
@@ -339,3 +348,47 @@ function handleResize() {
 }
 
 window.addEventListener('resize', handleResize);
+
+// [4. 추가] 랭킹 저장 함수 & 리사이즈 함수
+function updateRank(newScore) {
+    const GAME_KEY = "momizi_watermelon_rank"; 
+    let rankData = JSON.parse(localStorage.getItem(GAME_KEY)) || [];
+    rankData.push({ score: newScore, date: new Date().toLocaleDateString() });
+    rankData.sort((a, b) => b.score - a.score);
+    return rankData.slice(0, 5); // 상위 5등만 반환
+}
+
+// 화면 조절 대응 함수 (완전판)
+function handleResize() {
+    if (isGameOver && !isReady) return;
+    const newWidth = main.clientWidth;
+    const newHeight = main.clientHeight;
+
+    render.canvas.width = newWidth;
+    render.canvas.height = newHeight;
+    render.options.width = newWidth;
+    render.options.height = newHeight;
+
+    // 벽 위치 이동 (크기는 10000이라 안 바꿔도 됨)
+    if (ground) Matter.Body.setPosition(ground, { x: newWidth / 2, y: newHeight + 40 });
+    if (leftWall) Matter.Body.setPosition(leftWall, { x: -40, y: newHeight / 2 });
+    if (rightWall) Matter.Body.setPosition(rightWall, { x: newWidth + 40, y: newHeight / 2 });
+    if (overLine) Matter.Body.setPosition(overLine, { x: newWidth / 2, y: 30 });
+
+    updateGlobalScale();
+
+    // 잡고 있는 과일 위치 보정
+    if (currentBody && currentCircle) {
+        currentCircle.radius = CIRCLES[currentBody.index].baseRadius * currentGlobalScale;
+        let x = currentBody.position.x;
+        const r = currentCircle.radius;
+        if (x < r) x = r;
+        if (x > newWidth - r) x = newWidth - r;
+        Matter.Body.setPosition(currentBody, { x: x, y: currentBody.position.y });
+    }
+}
+// 기존 window.addEventListener('resize', handleResize); 는 지우거나 덮어씌우세요.
+window.addEventListener('resize', () => {
+    clearTimeout(window.resizeTimer);
+    window.resizeTimer = setTimeout(handleResize, 100);
+});
