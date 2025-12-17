@@ -69,12 +69,34 @@ header {
 
 /* === 게임 영역 스타일 === */
 .game-container {
-    flex: 1; /* 남은 공간 다 차지 */
+    /* flex: 1;  <-- 이거 삭제 (범인) */
     position: relative;
-    width: 100%; max-width: 500px; /* 게임판 최대 너비 */
-    margin: 0 auto; /* 중앙 정렬 */
+    
+    /* PC 화면 설정: 스마트폰 비율 유지 */
+    width: 100%;
+    max-width: 450px;       /* 적당한 너비 */
+    height: 80vh;           /* 화면의 80%만 차지 */
+    aspect-ratio: 9 / 16;   /* 9:16 비율 고정 */
+    margin: 20px auto;      /* 중앙 정렬 */
+    
     background: rgba(255,255,255,0.5);
-    border-left: 1px solid #ddd; border-right: 1px solid #ddd;
+    border: 2px solid #ddd; 
+    border-radius: 20px;    /* 둥근 모서리 */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    overflow: hidden;       /* 튀어나감 방지 */
+}
+
+/* 모바일 전용 설정 (화면이 작을 때) */
+@media screen and (max-width: 768px) {
+    .game-container {
+        width: 100%;
+        max-width: 100%;
+        height: calc(100vh - 60px); /* 헤더(60px) 뺀 나머지 꽉 채우기 */
+        aspect-ratio: auto;         /* 비율 해제 */
+        margin: 0;
+        border: none;
+        border-radius: 0;
+    }
 }
 
 /* [추가] 닉네임 입력창 스타일 */
