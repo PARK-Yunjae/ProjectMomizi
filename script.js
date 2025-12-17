@@ -33,8 +33,35 @@ const uiLayer = document.querySelector("#ui-layer");
 const scoreEl = document.querySelector("#score");
 const startBtn = document.querySelector("#start-btn");
 const rankDisplay = document.querySelector("#rank-display");
-const popSound = new Audio("pop.wav"); // pop.wav가 같은 폴더에 있어야 함
+// const popSound = new Audio("pop.wav"); // pop.wav가 같은 폴더에 있어야 함
 const IMG_PATH = "img/watermelon_Img/"; // 이미지 경로 주의!
+
+// [신규] 파일 없이 소리 내는 함수 (Web Audio API)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playPopSound() {
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    // 소리 설정 ("뽁" 느낌)
+    oscillator.type = 'sine'; // 부드러운 사인파
+    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); // 시작 높이 (800Hz)
+    oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1); // 0.1초 만에 뚝 떨어짐
+
+    // 볼륨 설정 (짧게 치고 빠지기)
+    gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.1); // 0.1초 뒤 정지
+}
 
 // 게임 변수
 let isGameOver = true;
@@ -144,7 +171,7 @@ Events.on(engine, "collisionStart", e => {
             World.remove(world, [bodyA, bodyB]);
             
             score += 10; scoreEl.innerText = score;
-            popSound.play().catch(()=>{});
+            playPopSound();
 
             const pathParts = bodyA.render.sprite.texture.split("/");
             const idx = parseInt(pathParts[pathParts.length-1].split(".")[0]);
@@ -188,6 +215,7 @@ function gameOver() {
     uiLayer.classList.remove("hidden");
     startBtn.innerText = "RESTART";
 }
+
 
 // 리사이즈 & 랭킹
 function handleResize() {
