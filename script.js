@@ -187,6 +187,13 @@ Events.on(engine, "collisionStart", e => {
             
             if(idx < FRUITS_BASE.length - 1) {
                 const nextFruit = FRUITS_BASE[idx+1];
+                
+                // [추가] 👉 만약 만들어진 과일이 '마지막 과일(10번)'이라면 엔딩!
+                if (idx + 1 === FRUITS_BASE.length - 1) {
+                    gameWin();
+                    return; // 과일 생성 안 하고 끝냄 (원하면 생성하고 끝내도 됨)
+                }
+                
                 const r = main.clientWidth * nextFruit.radiusRatio / 2;
                 const newBody = Bodies.circle(
                     (bodyA.position.x+bodyB.position.x)/2,
@@ -225,6 +232,21 @@ function gameOver() {
     startBtn.innerText = "RESTART";
 }
 
+function gameWin() {
+    isGameOver = true; 
+    isReady = false;
+    Runner.stop(runner); // 물리 엔진 정지
+    
+    // 승리 UI 표시 (기존 UI 재활용)
+    uiLayer.classList.remove("hidden");
+    document.querySelector(".game-title").innerText = "🎉 GAME CLEAR! 🎉";
+    startBtn.innerText = "다시 도전?";
+    
+    // 점수 저장 (보너스 점수 1000점?)
+    score += 1000;
+    scoreEl.innerText = score;
+    saveRank(score);
+}
 
 // [수정] 벽 위치를 화면 '안쪽'으로 배치
 function handleResize() {
