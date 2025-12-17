@@ -371,18 +371,25 @@ function checkFalling() {
     }
 }
 
+// [수정됨] CSS 애니메이션을 이용한 부드러운 삭제
 function gemFade() {
-    $.each($(".remove"), function () {
+    const removeTargets = document.querySelectorAll(".remove"); // jQuery 대신 바닐라 JS 사용
+    let count = removeTargets.length;
+
+    if (count === 0) {
+        checkMoving();
+        return;
+    }
+
+    removeTargets.forEach(el => {
         movingItems++;
-        $(this).animate({
-            opacity: 0
-        }, {
-            duration: 200,
-            complete: function () {
-                $(this).remove();
-                checkMoving();
-            }
-        });
+        el.classList.add("remove-effect"); // CSS 애니메이션 실행
+
+        // 0.3초(CSS 시간) 뒤에 실제로 제거
+        setTimeout(() => {
+            el.remove();
+            checkMoving();
+        }, 300);
     });
 }
 
