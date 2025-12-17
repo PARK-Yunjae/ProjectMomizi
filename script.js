@@ -92,7 +92,7 @@ const render = Render.create({
 const runner = Runner.create({ isFixed: true, delta: 1000/60 });
 
 // 3. 무한의 벽 (모바일 뚫림 방지)
-const WALL_THICK = 100;
+const WALL_THICK = 30;
 const WALL_LEN = 10000;
 const leftWall = Bodies.rectangle(0, 0, WALL_THICK, WALL_LEN, { isStatic: true, render: { fillStyle: "#ffcc80" } });
 const rightWall = Bodies.rectangle(0, 0, WALL_THICK, WALL_LEN, { isStatic: true, render: { fillStyle: "#ffcc80" } });
@@ -135,14 +135,20 @@ function createNewFruit() {
     World.add(world, currentBody);
 }
 
-// 조작 이벤트 (통합)
+// [수정] 과일 이동 범위 제한 (벽 안쪽으로)
 function handleInput(x) {
     if(isGameOver || disableAction || !currentBody) return;
+    
     const r = currentBody.circleRadius;
     const limitX = main.clientWidth;
-    // 벽 안쪽으로 가두기
-    if(x < r + WALL_THICK/2) x = r + WALL_THICK/2;
-    if(x > limitX - r - WALL_THICK/2) x = limitX - r - WALL_THICK/2;
+    
+    // 벽 두께(WALL_THICK) 만큼 더 안쪽으로 제한
+    // 왼쪽 제한: 반지름 + 벽 두께
+    if(x < r + WALL_THICK) x = r + WALL_THICK;
+    
+    // 오른쪽 제한: 전체너비 - 반지름 - 벽 두께
+    if(x > limitX - r - WALL_THICK) x = limitX - r - WALL_THICK;
+    
     Body.setPosition(currentBody, { x: x, y: currentBody.position.y });
 }
 function handleDrop() {
@@ -217,13 +223,22 @@ function gameOver() {
 }
 
 
-// 리사이즈 & 랭킹
+// [수정] 벽 위치를 화면 '안쪽'으로 배치
 function handleResize() {
-    const w = main.clientWidth; const h = main.clientHeight;
-    render.canvas.width = w; render.canvas.height = h;
-    Body.setPosition(leftWall, { x: -WALL_THICK/2, y: h/2 });
-    Body.setPosition(rightWall, { x: w + WALL_THICK/2, y: h/2 });
-    Body.setPosition(ground, { x: w/2, y: h + WALL_THICK/2 });
+    const w = main.clientWidth;
+    const h = main.clientHeight;
+    
+    render.canvas.width = w;
+    render.canvas.height = h;
+    
+    // 1. 왼쪽 벽: 중심을 두께의 절반(15px) 위치로 -> 0~30px 영역 차지
+    Body.setPosition(leftWall, { x: WALL_THICK / 2, y: h / 2 });
+    
+    // 2. 오른쪽 벽: 중심을 (전체너비 - 두께의 절반) 위치로
+    Body.setPosition(rightWall, { x: w - WALL_THICK / 2, y: h / 2 });
+    
+    // 3. 바닥: 중심을 (전체높이 - 두께의 절반) 위치로
+    Body.setPosition(ground, { x: w / 2, y: h - WALL_THICK / 2 });
 }
 window.addEventListener("resize", () => { handleResize(); });
 
