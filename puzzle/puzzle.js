@@ -197,8 +197,18 @@ function endGame(isClear) {
     
     if (isClear) {
         startBtn.innerHTML = `성공!<br>${100 - timeNum}초 기록<br>다음 단계`;
+        updateRank(100 - timeNum); // ★ 랭킹 저장 (걸린 시간 저장하려면 변형 필요)
         level++;
     } else {
         startBtn.innerHTML = "실패<br>다시 도전";
     }
+}
+
+// [함수 추가]
+function updateRank(score) {
+    const GAME_KEY = "momizi_puzzle_rank";
+    let rankData = JSON.parse(localStorage.getItem(GAME_KEY)) || [];
+    rankData.push({ score: score, date: new Date().toLocaleDateString() });
+    rankData.sort((a, b) => b.score - a.score); // 점수 높은 순
+    localStorage.setItem(GAME_KEY, JSON.stringify(rankData.slice(0, 5)));
 }
