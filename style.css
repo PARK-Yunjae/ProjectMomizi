@@ -77,6 +77,46 @@ header {
     border-left: 1px solid #ddd; border-right: 1px solid #ddd;
 }
 
+/* [추가] 닉네임 입력창 스타일 */
+.input-area {
+    margin-bottom: 20px;
+    width: 80%;
+    max-width: 300px;
+}
+
+#nickname {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1.2rem;
+    font-family: 'Jua', sans-serif; /* 폰트 통일 */
+    border: 3px solid #ffcc80;
+    border-radius: 50px;
+    text-align: center;
+    outline: none;
+    color: #5d4037;
+    background: #fff;
+    transition: 0.3s;
+}
+
+#nickname:focus {
+    border-color: #ef5350; /* 포커스 시 붉은색 강조 */
+    box-shadow: 0 0 10px rgba(239, 83, 80, 0.2);
+}
+
+/* 랭킹 아이템 스타일 보강 */
+.rank-item {
+    font-size: 1.1rem;
+    margin: 8px 0;
+    color: #555;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 5px;
+    display: flex;             /* 좌우 정렬 */
+    justify-content: center;   /* 중앙 정렬 */
+    gap: 10px;                 /* 간격 */
+}
+.rank-name { color: #333; font-weight: bold; }
+.rank-score { color: #e53935; }
+
 #game-area { width: 100%; height: 100%; }
 
 .score-board {
