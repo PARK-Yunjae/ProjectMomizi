@@ -3,12 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>수박게임 Challenge</title>
+    <title>Project Momizi - 수박 만들기</title>
     <link rel="stylesheet" href="style.css">
-    <script src="matter.js"></script> 
-    <script type="module" src="script.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <script src="matter.js"></script> <script type="module" src="script.js" defer></script>
 </head>
 <body>
+
+    <header>
+        <div class="header-inner">
+            <div class="logo">
+                <a href="#">
+                    <img src="img/logo.png" alt="Momizi Logo">
+                </a>
+            </div>
+
+            <nav class="social-nav">
+                <a href="https://www.youtube.com/@e_momizi" target="_blank"><img src="img/youtube.png" alt="Youtube"></a>
+                <a href="https://chzzk.naver.com/5eb126cea465f411843cdc2074ebb301" target="_blank"><img src="img/chzzk.png" alt="Chzzk"></a>
+                <a href="https://blog.naver.com/maxcder" target="_blank"><img src="img/goods.png" alt="Goods"></a>
+            </nav>
+
+            <div class="menu-trigger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="mobile-menu">
+            <a href="https://www.youtube.com/@e_momizi" target="_blank"><img src="img/youtube.png" alt="Youtube"> <span>유튜브</span></a>
+            <a href="https://chzzk.naver.com/5eb126cea465f411843cdc2074ebb301" target="_blank"><img src="img/chzzk.png" alt="Chzzk"> <span>치지직</span></a>
+            <a href="https://blog.naver.com/maxcder" target="_blank"><img src="img/goods.png" alt="Goods"> <span>굿즈샵</span></a>
+        </div>
+    </header>
+
     <div class="game-container">
         <div class="score-board">
             <span>SCORE</span>
@@ -18,9 +47,11 @@
         <main id="game-area"></main>
 
         <div id="ui-layer" class="active">
-            <h1 class="title">🍉 수박 만들기 🍉</h1>
-            <div id="rank-display"></div> <button id="start-btn">게임 시작</button>
+            <h1 class="game-title">🍉 수박 만들기</h1>
+            <div id="rank-display"></div>
+            <button id="start-btn">GAME START</button>
         </div>
     </div>
+
 </body>
 </html>
