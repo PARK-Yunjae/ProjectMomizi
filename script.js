@@ -1,3 +1,6 @@
+const nicknameInput = document.querySelector("#nickname"); // 입력창 선택
+let currentNickname = "익명"; // 기본값
+
 // === [PART 1] 헤더 & 메뉴 로직 ===
 const trigger = document.querySelector('.menu-trigger');
 const mobileMenu = document.querySelector('.mobile-menu');
@@ -242,19 +245,60 @@ function handleResize() {
 }
 window.addEventListener("resize", () => { handleResize(); });
 
+// [수정] 랭킹 시스템 (닉네임 포함)
 function saveRank(sc) {
     const KEY = "momizi_rank_final";
     let r = JSON.parse(localStorage.getItem(KEY)) || [];
-    if(sc > 0) {
-        r.push({s:sc, d:new Date().toLocaleDateString()});
-        r.sort((a,b)=>b.s - a.s);
-        localStorage.setItem(KEY, JSON.stringify(r.slice(0,5)));
+
+    // 0점 이상일 때만 저장 시도
+    if (sc > 0) {
+        // 이름, 점수, 날짜 함께 저장
+        r.push({ name: currentNickname, s: sc, d: new Date().toLocaleDateString() });
+        
+        // 점수 내림차순 정렬
+        r.sort((a, b) => b.s - a.s);
+        
+        // 상위 5등까지만 자르기
+        r = r.slice(0, 5);
+        
+        localStorage.setItem(KEY, JSON.stringify(r));
     }
+
+    // 랭킹 보여주기 HTML 생성
     let h = "<h3>🏆 명예의 전당 🏆</h3>";
-    r.forEach((v,i)=> h += `<div class="rank-item ${i==0?'rank-1':''}">${i+1}위 : ${v.s}점</div>`);
-    rankDisplay.innerHTML = h || "기록이 없습니다.";
+    if (r.length === 0) {
+        h += "<p>아직 기록이 없습니다.<br>첫 번째 주인공이 되어보세요!</p>";
+    } else {
+        r.forEach((v, i) => {
+            // 1,2,3등은 메달 표시
+            let medal = "";
+            if (i === 0) medal = "🥇";
+            else if (i === 1) medal = "🥈";
+            else if (i === 2) medal = "🥉";
+            else medal = `${i + 1}위`;
+
+            h += `<div class="rank-item ${i === 0 ? 'rank-1' : ''}">
+                    <span class="rank-medal">${medal}</span>
+                    <span class="rank-name">${v.name}</span>
+                    <span class="rank-score">${v.s}점</span>
+                  </div>`;
+        });
+    }
+    rankDisplay.innerHTML = h;
 }
 
-startBtn.addEventListener("click", startGame);
+// [수정] 게임 시작 버튼 클릭 시 닉네임 체크
+startBtn.addEventListener("click", () => {
+    const name = nicknameInput.value.trim();
+    
+    if (!name) {
+        alert("닉네임을 입력해주세요!");
+        nicknameInput.focus();
+        return;
+    }
+    
+    currentNickname = name; // 닉네임 저장
+    startGame();
+});
 saveRank(0); // 랭킹 로드
 handleResize();
