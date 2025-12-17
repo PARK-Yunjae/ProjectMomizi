@@ -1,90 +1,55 @@
-# [Project Momizi](https://park-yunjae.github.io/ProjectMomizi/)
+# 🍉 Project Momizi: Watermelon Challenge
+> **물리 엔진 기반의 웹 브라우저 반응형 퍼즐 게임** > *"떨어뜨리고, 합치고, 수박을 만드세요!"*
 
-## 프로젝트 계획 및 시작
+![Generic badge](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg) ![Generic badge](https://img.shields.io/badge/Library-Matter.js-blue.svg) ![Generic badge](https://img.shields.io/badge/Style-Responsive-green.svg)
 
-    기획 :  HTML, CSS, JavaScript를 배우고 나중에도 활용될 수 있는 프로젝트를 생각하다가 
-            팬게임을 모아둔 사이트를 제작하게 되었습니다.
-            미니 게임은 총 3가지 제작 예정입니다. ( 카드 짝 맞추기, 수박 게임, 반응속도 테스트) 추후 추가 예정
-    
-## 기획
+## 📖 프로젝트 소개 (Introduction)
+과거 여러 미니게임을 모아둔 프로젝트에서 벗어나, **가장 기술적 난이도가 높았던 '수박게임'에 집중하여 최적화한 리마스터 버전**입니다.
+별도의 설치 없이 웹 브라우저에서 바로 즐길 수 있으며, 모바일과 PC 환경 모두에 완벽하게 대응합니다.
 
-    일정 - 2024. 01. 23 ~ 2024. 01. 28 ( 6일 )
-        a. 1일차 : 전체적인 일정 기획및 스토리 보드와 css js가 올라갈 html 태그 작성
-        b. 2일차 : 사이트의 전체적인 구조 (css 적용) 만들기
-        c. 3일차 : 카드짝맞추기 제작
-        d. 4일차 : 슈팅게임 제작
-        e. 5일차 : 수박게임 제작
-        f. 6일차 : 반응형 웹페이지 (모바일 예정)
+### 🔗 [게임 플레이 링크 (Demo)](https://park-yunjae.github.io/ProjectMomizi/)
+*(위 링크를 클릭하면 바로 게임을 시작할 수 있습니다.)*
 
-## 디자인
+---
 
-    페이지 구성
-      메인 페이지 , 게임1, 게임2, 게임3
+## 🚀 주요 기능 및 기술적 특징 (Key Features)
 
-      1. 메인 페이지 ( index ) 
-        header - 로고(홈) , 게임1, 게임2, 게임3 링크
-        main   - 움직이는 이미지
-        footer - 사이트 링크
+### 1. ⚡ 물리 엔진 최적화 (Matter.js)
+- **일정한 게임 속도:** `Runner.create({ isFixed: true })` 옵션을 사용하여, 고사양/저사양 기기 상관없이 동일한 물리 연산 속도를 보장합니다.
+- **무한의 벽 (Infinite Walls):** 반응형 화면 크기 조절 시, 물리 객체가 벽을 뚫고 나가는 버그(Tunneling)를 방지하기 위해 `10000px` 길이의 가상 벽을 구현했습니다.
 
-      2. 게임1 - 카드짝 맞추기 - 기존 예제 참고
-        header - 메인페이지 header고정
-        main   - 게임 페이지
-        
-      4. 게임2 - 수박게임
-        페이지는 게임1과 동일
-        이미지 10종류 - 카드게임 재활용
-        
-      4. 게임3 - 반응속도 테스트
-        페이지는 게임1과 동일
-        이미지 10종류 - 카드게임 재활용
-        
-      4. 게임4 - 리듬 게임
-        페이지는 게임1과 동일
-        이미지 10종류 - 카드게임 재활용
+### 2. 📱 완벽한 반응형 & 모바일 지원
+- **통합 입력 시스템:** 마우스(PC)와 터치(Mobile) 이벤트를 하나의 로직으로 통합하여 기기 구분 없는 매끄러운 조작감을 제공합니다.
+- **모바일 햄버거 메뉴:** 화면이 좁은 모바일 환경에서는 상단 메뉴가 자동으로 햄버거 버튼으로 변환됩니다.
 
-## 개발
-    html css 로 화면 구성을 만든 다음 개임 개발 진행 후 반응으로 구현.
+### 3. 🏆 서버 없는 랭킹 시스템 (Local Storage)
+- 백엔드 서버 없이 브라우저의 `LocalStorage`를 활용하여 **데이터 영속성**을 구현했습니다.
+- 게임 오버 시 상위 5개의 최고 기록을 자동으로 정렬하여 저장하고 보여줍니다.
 
-    1. 메인 페이지 ( 움직이는 canvas 를 배경화면으로 )    
-        반응 형 및 사이트, 게임 화면 링크 생성
+### 4. 🔊 파일 없는 사운드 합성 (Web Audio API)
+- 오디오 파일(`.wav`) 의존성을 제거하고, 브라우저 자체 `AudioContext`를 이용해 **즉석에서 효과음을 합성**합니다.
+- 이로 인해 로딩 속도가 빨라지고 리소스 관리가 간편해졌습니다.
 
-    2. 게임1 카드 짝 맞추기
+---
 
-      카드 짝 맞추기 구현시 순서도를 안하고 개발을 시작해 여러가지 에로사항이 생겼습니다
-      그때 그때 필요한걸 짜다보니 변수도 많이 추가되고 게임 재시작을 해야 할때 여러군데서 수정을 해야 했습니다.
-        
-![카드짝맞추기_순서도](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/5411f50c-e99e-4951-a9b0-84265384c9cb)
+## 🛠 기술 스택 (Tech Stack)
 
-    3. 게임2 수박게임
-    
-       이번에는 순서도를 먼저 만들고 개발에 엔진을 활용할 겁니다.
-       matter.js 엔진은 어렵습니다.
-       터치 이벤트 분리 시도 3차 실패 후 침
+| 구분 | 기술 | 설명 |
+|:---:|:---:|:---|
+| **Core** | <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black"/> | ES6+ 문법, 모듈 시스템(Module) 활용 |
+| **Physics** | **Matter.js** | 2D 물리 엔진 라이브러리 |
+| **Styling** | <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white"/> | Flexbox, 애니메이션, 반응형 미디어 쿼리 |
+| **Markup** | <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white"/> | 시맨틱 태그 구조 |
 
-![수박게임](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/c29b3feb-aece-4217-ac0c-dda074316c37)
+---
 
-    4. 게임3 반응속도 테스트
-    
-        의외로 setInterval 하고 setTimeout을 클리어 안해주면 막 클릭했을때 버그 발생해서 수정작업이 조금 발생
-
-![반응속도테스트](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/c091f0e5-1f14-4d98-b4aa-d72a3e9f622b)
-
-    5. 게임4 퍼즐 게임
-    
-        grid를 쓰면 의외로 보드 제작은 어렵지 않았으나
-        드래그 이벤트 시 서로 객체만 바꾸는게 생각보다 많이 어려웠음
-
-![퍼즐게임](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/75514082-6460-41b3-9e3a-428e723a5725)
-
-    6. 애니팡?
-        리펙토링을 해보기로함 jquery -> vanila javascript 
-
-![애니팡](https://github.com/PARK-Yunjae/ProjectMomizi/assets/153791225/bad7b81f-97b2-49a6-aeea-52a0a81865c2)
-
-
-
-## 테스트 
-    페이지 제작하면서 자체 테스트와 사이크 주소 배포를 통한 피드백 받으면서 진행 합니다.
-## 배포
-    깃을 통해 서버에 올려 디자이너분에게 제공후 공개 요청
-    
+## 📂 폴더 구조 (Directory Structure)
+```bash
+ProjectMomizi/
+├── index.html        # 메인 실행 파일 (게임 + UI)
+├── style.css         # 통합 스타일시트
+├── script.js         # 게임 로직 및 UI 제어
+├── matter.js         # 물리 엔진 라이브러리
+└── img/              # 이미지 리소스 폴더
+    ├── logo.png
+    └── watermelon_Img/ (과일 스프라이트)
