@@ -1,36 +1,56 @@
+/* watermelon.css */
+body {
+    overflow: hidden; /* 스크롤 방지 */
+    touch-action: none; /* 모바일 터치 시 화면 밀림 방지 */
+    background-color: #f0f0f0;
+}
+
 main {
-    position: absolute;
-    top: 60px; /* 이 값도 %나 vh로 조절 고려 */
-    width: 90%; /* 기본 너비를 %로 */
-    max-width: 480px; /* 최대 너비 제한 */
-    /* height는 aspect-ratio를 사용하거나, JS에서 너비에 맞춰 동적 계산 추천 */
-    /* height: 680px; */
-    aspect-ratio: 480 / 680; /* 너비에 따른 비율 유지 (최신 브라우저 지원) */
-    /* 또는 height를 % (e.g., 80vh)로 하고 max-height도 설정 */
-    max-height: 680px; /* 최대 높이 제한 */
+    /* [중요] 모바일 대응을 위한 크기 설정 */
+    width: 100%; 
+    max-width: 450px; /* PC에서는 최대 450px까지만 커짐 */
+    height: 90vh; /* 화면 높이의 90%만 사용 (버튼 공간 확보) */
+    
+    margin: 0 auto; /* 중앙 정렬 */
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.5); /* 게임 영역 확인용 배경 */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
 
+/* 캔버스가 main 크기를 꽉 채우도록 설정 */
+main canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* 점수판 스타일 */
+#score {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    font-weight: 900;
+    color: #333;
+    z-index: 10;
+    pointer-events: none; /* 클릭 방해 금지 */
+}
+
+/* 시작 버튼 스타일 */
+.startBtn {
+    position: absolute;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%);
-    background-color: rgba(90, 90, 90, 0.5);
-    opacity: 0; /* JS로 제어 */
-    overflow: hidden; /* 중요: 캔버스가 넘치지 않도록 */
+    transform: translate(-50%, -50%);
+    padding: 15px 30px;
+    font-size: 20px;
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    z-index: 20;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
 }
-
-#score{
-    position: absolute;
-    top: 10px;
-    right : 20px;
-    font-size: 2em;
-    color:black;
-}
-
-@media screen and (max-width: 480px) {
-    main{
-        width: 96%;
-    }
-}
-/* @media screen and (max-height: 740px) {
-    main{
-        height: 85%;
-    }
-} */
