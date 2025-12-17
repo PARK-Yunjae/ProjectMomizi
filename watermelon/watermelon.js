@@ -294,48 +294,47 @@ Matter.Events.on(engine, "collisionStart", (e) => {
         }
     });
 })
-
+// [최종 수정됨] 화면 리사이즈 시 벽 위치 + 과일 위치 동시 보정
 function handleResize() {
-    if (isGameOver && !isReady) return; // 게임오버/승리 화면 등에서는 실행 안함
+    // 1. 게임 준비 중이거나 실행 중일 때만 반응
+    if (isGameOver && !isReady) return;
 
-    // 1. main 요소의 현재 CSS 픽셀 크기 가져오기
+    // 2. 새로운 화면 크기 측정
     const newWidth = main.clientWidth;
     const newHeight = main.clientHeight;
     const dpr = window.devicePixelRatio || 1;
 
-    // 2. Matter.js 렌더러 옵션 업데이트 (CSS 픽셀 기준)
+    // 3. 렌더러 및 캔버스 크기 동기화
+    render.canvas.width = newWidth;
+    render.canvas.height = newHeight;
     render.options.width = newWidth;
     render.options.height = newHeight;
-    render.options.pixelRatio = dpr; // DPR도 여기서 다시 설정해주는 것이 안전할 수 있습니다.
 
-    // 3. 캔버스 요소의 실제 드로잉 버퍼 크기 업데이트 (실제 픽셀 기준)
-    if (render.canvas) { // render.canvas가 존재하는지 확인
-        render.canvas.width = newWidth * dpr;
-        render.canvas.height = newHeight * dpr;
+    // 4. 벽/바닥 위치 재조정 (Matter.Body 사용)
+    // 화면 중심이 바뀌었으므로 벽들도 이사해야 함
+    if (ground) Matter.Body.setPosition(ground, { x: newWidth / 2, y: newHeight + 40 });
+    if (leftWall) Matter.Body.setPosition(leftWall, { x: -40, y: newHeight / 2 });
+    if (rightWall) Matter.Body.setPosition(rightWall, { x: newWidth + 40, y: newHeight / 2 });
+    if (overLine) Matter.Body.setPosition(overLine, { x: newWidth / 2, y: 30 });
 
-        // 4. 캔버스 요소의 화면 표시 CSS 크기 업데이트 (CSS 픽셀 기준) <- 중요!
-        render.canvas.style.width = newWidth + 'px';
-        render.canvas.style.height = newHeight + 'px';
-    }
+    // 5. 전역 스케일 비율 재계산
+    updateGlobalScale();
 
-    // 5. 전역 스케일 업데이트 (과일 크기 등을 위해)
-    updateGlobalScale(); // 이전에 만든 함수가 있다면 호출
-
-    // 6. 벽, 바닥 등 물리 객체 위치 및 크기 업데이트
-    //    (이전 답변에서 제안한 Body.setPosition, Body.setVertices 등 로직...)
-    //    예시:
-    if (leftWall) Body.setPosition(leftWall, { x: -40, y: newHeight / 2 }); // newHeight 사용
-    // ... (rightWall, ground, overLine 등도 newWidth, newHeight 기준으로 업데이트)
-
-    // 7. 현재 떠 있는 과일(currentBody) 위치/크기 보정 (필요시)
+    // 6. [중요] 현재 잡고 있는 과일(Current Body) 위치 보정
+    // 화면이 줄어들면, 잡고 있던 과일도 안쪽으로 밀어넣어야 함
     if (currentBody && currentCircle) {
-        currentCircle.radius = CIRCLES[currentBody.index].baseRadius * currentGlobalScale; // currentGlobalScale은 updateGlobalScale()에서 업데이트됨
-
+        // 스케일 변화에 따른 반지름 재계산
+        currentCircle.radius = CIRCLES[currentBody.index].baseRadius * currentGlobalScale;
+        
+        // 과일이 화면 밖으로 나갔는지 검사 (Clamping)
         let x = currentBody.position.x;
-        const radius = currentCircle.radius;
-        if (x < radius) x = radius;
-        if (x > newWidth - radius) x = newWidth - radius; // newWidth 사용
-        Body.setPosition(currentBody, { x: x, y: currentBody.position.y });
+        const r = currentCircle.radius;
+
+        if (x < r) x = r; // 왼쪽 벽 넘음 방지
+        if (x > newWidth - r) x = newWidth - r; // 오른쪽 벽 넘음 방지
+
+        // 보정된 위치 적용
+        Matter.Body.setPosition(currentBody, { x: x, y: currentBody.position.y });
     }
 }
 
