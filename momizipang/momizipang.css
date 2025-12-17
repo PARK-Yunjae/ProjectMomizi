@@ -47,15 +47,15 @@ main{
     border: 1px solid red;
 }
 
-/* 펑 터지는 애니메이션 정의 */
+/* [추가] 펑 터지는 효과 */
 @keyframes popEffect {
     0% { transform: scale(1); opacity: 1; }
-    40% { transform: scale(1.15); opacity: 0.8; } /* 살짝 커졌다가 */
-    100% { transform: scale(0); opacity: 0; }     /* 작아지며 사라짐 */
+    50% { transform: scale(1.2); opacity: 0.8; }
+    100% { transform: scale(0); opacity: 0; }
 }
-
-/* JS에서 이 클래스를 붙이면 애니메이션 실행 */
-.gem.remove-effect {
+.remove-effect {
     animation: popEffect 0.3s ease-out forwards;
-    pointer-events: none; /* 사라지는 동안 클릭 방지 */
+    pointer-events: none;
+    border: none !important; /* 테두리도 없애서 깔끔하게 */
+    background-color: transparent !important;
 }
