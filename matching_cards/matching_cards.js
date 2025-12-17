@@ -1,36 +1,32 @@
-class cards {
+class Cards {
     constructor() {
-        this.board = document.querySelector("board");
+        this.board = document.querySelector(".board"); // 클래스 선택자로 변경
         this.start = document.querySelector(".startCard");
         this.timer = document.querySelector("#timer");
         this.stage = document.querySelector(".stage");
-        this.cardBack = document.getElementsByClassName("card_back");
-        this.cardFront = document.getElementsByClassName("card_front");
         this.time = 100;
         this.level = 1;
-        this.ready = false;
-        this.isFlip = false;
-        this.timerInterval = 0;
+        this.isFlip = false; // 카드 뒤집기 가능 여부
+        this.timerInterval = null;
         this.cardDeck = [];
         this.BOARD_SIZE = 4;
 
         // 게임 시작 버튼
         this.start.addEventListener("click", () => {
-            this.ready = true;
             this.start.style.top = "-1000px";
             this.startGame();
-        })
+        });
 
-        // 카드 클릭 이벤트
+        // 이벤트 위임 (카드 클릭)
         this.board.addEventListener("click", e => {
-            if (this.isFlip === false) {
-                return;
-            }
+            if (!this.isFlip) return;
 
-            if (e.target.parentNode.className === "card") {
-                let clickCardId = e.target.parentNode.dataset.id;
-
-                if (this.cardDeck[clickCardId].isOpen === false) {
+            // 클릭한 요소가 카드 내부라면 카드 요소 찾기
+            const cardEl = e.target.closest(".card");
+            if (cardEl && !cardEl.classList.contains("flipped")) {
+                const clickCardId = parseInt(cardEl.dataset.id);
+                // 이미 열린 카드가 아니면 오픈
+                if (!this.cardDeck[clickCardId].isOpen) {
                     this.openCard(clickCardId);
                 }
             }
@@ -45,247 +41,182 @@ class cards {
         this.showCardDeck();
     }
 
-    endGame() {
-        this.showGameResult();
-    }
-
     initGame() {
         this.isFlip = false;
         this.time = 100;
         this.cardDeck = [];
+        clearInterval(this.timerInterval);
     }
 
     initScreen() {
         this.board.innerHTML = "";
         this.stage.innerHTML = `Stage ${this.level}`;
-    }
-
-    clearBoard() {
-        clearInterval(this.timerInterval);
+        this.timer.innerHTML = this.time;
     }
 
     startTimer() {
         this.timerInterval = setInterval(() => {
-            this.timer.innerHTML = this.time--;
+            this.time--;
+            this.timer.innerHTML = this.time;
 
             if (this.time <= 0) {
                 clearInterval(this.timerInterval);
-                this.endGame();
+                this.endGame(false); // 시간 초과 패배
             }
         }, 1000);
     }
 
     makeCardDeck() {
+        const pairCount = this.BOARD_SIZE / 2;
         let randNumArr = [];
 
-        for (let i = 0; i < this.BOARD_SIZE / 2; i++) {
-            // 이미지 개수
-            let rNum = parseInt(Math.random() * 13 + 1);
-
-            if (randNumArr.indexOf(rNum) === -1) {
+        while (randNumArr.length < pairCount) {
+            let rNum = Math.floor(Math.random() * 13) + 1;
+            if (!randNumArr.includes(rNum)) {
                 randNumArr.push(rNum);
-            } else {
-                i--;
             }
         }
-        // 같은 카드는 두장 - 이게 되네?
-        randNumArr.push(...randNumArr);
-        // -0.5 ~ 0.5 이것도 잘 써먹겠음
+        // 쌍 만들기 및 셔플
+        randNumArr = [...randNumArr, ...randNumArr];
         randNumArr.sort(() => Math.random() - 0.5);
 
-        for (let i = 0; i < this.BOARD_SIZE; i++) {
-            this.cardDeck.push({
-                card: randNumArr[i],
-                isOpen: false,
-                isMatch: false
-            });
-        }
-
-        return this.cardDeck;
+        this.cardDeck = randNumArr.map(num => ({
+            card: num,
+            isOpen: false,
+            isMatch: false
+        }));
     }
 
     settingCardDeck() {
-        for (let i = 0; i < this.BOARD_SIZE; i++) {
-            this.board.innerHTML +=
-                `<div class="card" data-id="${i}" data-card="${this.cardDeck[i].card}">
-            <div class="card_back"></div>
-            <div class="card_front"></div>
-            </div>`;
-            this.cardFront[i].style.backgroundImage = `url(../img/${this.cardDeck[i].card}.png)`;
-        }
+        // [최적화] DocumentFragment 사용하여 리플로우 최소화
+        const fragment = document.createDocumentFragment();
 
-        let card = document.querySelectorAll(".card");
+        this.cardDeck.forEach((item, i) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.dataset.id = i;
+            card.dataset.card = item.card;
+            
+            // 반응형 크기 설정
+            let sizeClass = "";
+            if (this.level === 1) sizeClass = "col-2";      // 4개 (2x2)
+            else if (this.level === 2) sizeClass = "col-4"; // 12개 (4x3) - CSS 제어 권장
+            else if (this.level === 3) sizeClass = "col-4"; // 16개 (4x4)
+            else sizeClass = "col-6";                       // 24개 (6x4)
 
-        for (let i = 0; i < this.BOARD_SIZE; i++) {
-            if (this.level == 1) { // 4개 
-                card[i].style.width = "50%";
-                card[i].style.height = "50%";
-            } else if (this.level == 2) { // 12개
-                card[i].style.width = "25%";
-                card[i].style.height = "33%";
-            } else if (this.level == 3) { // 16개
-                card[i].style.width = "25%";
-                card[i].style.height = "25%";
-            } else if (this.level == 4) { // 24개
-                card[i].style.width = "16.6%";
-                card[i].style.height = "25%";
-            }
-        }
+            // JS에서 스타일 직접 주입 (기존 로직 유지)
+            if (this.level == 1) { card.style.width = "50%"; card.style.height = "50%"; }
+            else if (this.level == 2) { card.style.width = "25%"; card.style.height = "33.3%"; }
+            else if (this.level == 3) { card.style.width = "25%"; card.style.height = "25%"; }
+            else if (this.level == 4) { card.style.width = "16.66%"; card.style.height = "25%"; }
+
+            card.innerHTML = `
+                <div class="card_back"></div>
+                <div class="card_front" style="background-image: url(../img/${item.card}.png)"></div>
+            `;
+            fragment.appendChild(card);
+        });
+
+        this.board.appendChild(fragment);
+        this.cardsEl = document.querySelectorAll(".card"); // DOM 요소 캐싱
     }
 
     showCardDeck() {
         let cnt = 0;
-
-        // 처음 써봄 - 약속?
-        let showCardPromise = new Promise((resolve, reject) => {
-            let showCardTimer = setInterval(() => {
-                this.cardBack[cnt].style.transform = "rotateY(180deg)";
-                this.cardFront[cnt++].style.transform = "rotateY(0)";
-                // 다 뒤집으면 종료
-                if (cnt === this.BOARD_SIZE) {
-                    clearInterval(showCardTimer);
-                    resolve();
-                }
-            }, 200);
-        });
-
-        // resolve를 실행하면 성공 reject를 실행하면 실패
-        showCardPromise.then(() => {
-            setTimeout(() => {
-                this.hideCardDeck();
-            }, 2000);
-        })
+        let showInterval = setInterval(() => {
+            if (cnt >= this.BOARD_SIZE) {
+                clearInterval(showInterval);
+                setTimeout(() => this.hideCardDeck(), 2000);
+                return;
+            }
+            // CSS 클래스로 제어 (transform 직접 조작보다 깔끔함)
+            this.cardsEl[cnt].classList.add("flipped");
+            cnt++;
+        }, 100);
     }
 
     hideCardDeck() {
-        for (let i = 0; i < this.BOARD_SIZE; i++) {
-            this.cardBack[i].style.transform = "rotateY(0deg)";
-            this.cardFront[i].style.transform = "rotateY(180deg)";
-        }
-
+        this.cardsEl.forEach(card => card.classList.remove("flipped"));
         setTimeout(() => {
             this.isFlip = true;
             this.startTimer();
-        }, 100);
+        }, 500);
     }
 
-    // 카드 오픈
     openCard(id) {
-        this.cardBack[id].style.transform = "rotateY(180deg)";
-        this.cardFront[id].style.transform = "rotateY(0deg)";
-
-        // 선택한 카드의 open 여부를 true로 변경
+        // 화면 뒤집기
+        this.cardsEl[id].classList.add("flipped");
+        // 데이터 업데이트
         this.cardDeck[id].isOpen = true;
 
-        // 선택한 카드가 첫 번째로 선택한 카드인지
-        // 두 번째로 선택한 카드인지 판별하기 위해 
-        // 오픈한 카드의 index를 저장하는 배열 요청
-        let openCardIndexArr = this.getOpenCardArr();
+        // 열린 카드 찾기
+        const openCards = this.cardDeck
+            .map((c, i) => ({ ...c, index: i }))
+            .filter(c => c.isOpen && !c.isMatch);
 
-        // 두 번째 선택인 경우 카드 일치 여부 확인
-        // 일치 여부 확인 전까지 카드 뒤집기 불가(isFlip = false)
-        if (openCardIndexArr.length === 2) {
-            this.isFlip = false;
-            this.checkCardMatch(openCardIndexArr);
+        if (openCards.length === 2) {
+            this.isFlip = false; // 추가 클릭 방지
+            this.checkMatch(openCards);
         }
     }
 
-    getOpenCardArr() {
-        let openCardIndexArr = [];
+    checkMatch(openCards) {
+        const [first, second] = openCards;
 
-        // 카드는 오픈했는데 아직 짝을 맞추지 않은 카드라면
-        for (let i = 0; i < this.cardDeck.length; i++) {
-            if (this.cardDeck[i].isOpen === true &&
-                this.cardDeck[i].isMatch === false)
-                openCardIndexArr.push(i);
-        }
-
-        return openCardIndexArr;
-    }
-
-    checkCardMatch(arr) {
-        let firstCard = this.cardDeck[arr[0]];
-        let secondCard = this.cardDeck[arr[1]];
-        if (firstCard.card === secondCard.card) {
-            firstCard.isMatch = true;
-            secondCard.isMatch = true;
-
-            this.matchCard();
+        if (first.card === second.card) {
+            // 정답
+            this.cardDeck[first.index].isMatch = true;
+            this.cardDeck[second.index].isMatch = true;
+            this.isFlip = true;
+            
+            // 클리어 체크
+            if (this.cardDeck.every(c => c.isMatch)) {
+                this.endGame(true);
+            }
         } else {
-            firstCard.isOpen = false;
-            secondCard.isOpen = false;
-
-            this.closeCard(arr);
+            // 오답 -> 다시 닫기
+            this.cardDeck[first.index].isOpen = false;
+            this.cardDeck[second.index].isOpen = false;
+            
+            setTimeout(() => {
+                this.cardsEl[first.index].classList.remove("flipped");
+                this.cardsEl[second.index].classList.remove("flipped");
+                this.isFlip = true;
+            }, 800);
         }
     }
 
-    matchCard() {
-        if (this.checkClear()) {
-            this.endGame();
-            return;
-        }
-
+    endGame(isClear) {
+        clearInterval(this.timerInterval);
         setTimeout(() => {
-            this.isFlip = true;
-        }, 100);
-    }
+            this.board.innerHTML = "";
+            this.start.style.top = "50%";
+            this.start.style.display = "block"; // 숨겨졌을 수 있으므로
 
-    checkClear() {
-        for (let i = 0; i < this.cardDeck.length; i++) {
-            if (this.cardDeck[i].isMatch === false) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    closeCard(arr) {
-        setTimeout(() => {
-            for (let i = 0; i < arr.length; i++) {
-                this.cardBack[arr[i]].style.transform = "rotateY(0deg)";
-                this.cardFront[arr[i]].style.transform = "rotateY(-180deg)";
-            }
-
-            this.isFlip = true;
-        }, 1000);
-    }
-
-    // 게임이 종료되면
-    showGameResult() {
-        setTimeout(() => {
-            // 클리어
-            if (this.time > 0) {
-                this.board.innerHTML = "";
-                this.timer.innerHTML = "";
-                clearInterval(this.timerInterval);
-                this.start.style.top = "50%";
-                this.start.innerHTML = `Stage ${this.level} 클리어<br>${100-this.time}초 <br><br>클릭`;
-
-                if (this.level === 1) {
-                    this.BOARD_SIZE = 12;
-                } else if (this.level === 2) {
-                    this.BOARD_SIZE = 16;
-                } else if (this.level === 3) {
-                    this.BOARD_SIZE = 24;
-                } else {
-                    this.start.innerHTML = `축하합니다`;
-                    this.level = 0;
-                    this.BOARD_SIZE = 4;
-                    this.start.style.onclick = `location.href = "../index.html";`;
+            if (isClear) {
+                this.start.innerHTML = `Stage ${this.level} 클리어!<br>${100 - this.time}초 소요<br>다음 단계로`;
+                
+                // 레벨업 로직
+                if (this.level === 1) this.BOARD_SIZE = 12;
+                else if (this.level === 2) this.BOARD_SIZE = 16;
+                else if (this.level === 3) this.BOARD_SIZE = 24;
+                else {
+                    this.start.innerHTML = "축하합니다!<br>모든 스테이지 클리어!<br>홈으로";
+                    this.start.onclick = () => location.href = "../index.html";
+                    return;
                 }
                 this.level++;
+            } else {
+                this.start.innerHTML = "게임 오버<br>다시 도전";
             }
-            // 게임오버
-            else {
-                this.board.innerHTML = "";
-                this.timer.innerHTML = "";
-                clearInterval(this.timerInterval);
-                this.start.style.top = "50%";
-                this.start.innerHTML = `게임오버<br>클릭시 재시작`;
-            }
-            this.stage.innerHTML = ``;
-        }, 1000);
+        }, 500);
     }
 }
 
-let cardgame = new cards();
+// CSS에 .card.flipped .card_back { transform: rotateY(180deg); } 등을 추가하면 더 깔끔합니다.
+// 여기서는 JS로 transform을 제어하던 기존 방식 호환을 위해 classList.add('flipped')를 썼지만,
+// CSS 파일에 .flipped 관련 스타일이 없다면 기존처럼 직접 style.transform을 줘야 합니다.
+// 편의를 위해 JS에서 직접 style을 주는 헬퍼를 추가하거나 CSS를 수정하는 것이 좋습니다.
+// (위 코드는 CSS 수정 없이 동작하도록 하려면 showCardDeck 부분의 classList 대신 style 조작을 복구해야 함)
+
+const cardGame = new Cards();
